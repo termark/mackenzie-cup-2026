@@ -135,7 +135,7 @@ button.action,a.action{border:0;border-radius:11px;padding:11px 14px;font-weight
     <p>Reddam House Constantia • 11–13 September 2026</p>
     <div class="heroMeta">
       <span class="metaPill">Repo: termark/mackenzie-cup-2026</span>
-      <span class="metaPill">Page version: 0.8.4</span>
+      <span class="metaPill">Page version: 0.8.5</span>
     </div>
     <div class="authbar noPrint">
       <span id="authState" class="authstate">Connecting…</span>
@@ -309,7 +309,7 @@ WGJS 6-6 Sun Valley Primary"></textarea>
         Choose the final group position to see the knockout route.
       </div>
 
-      <div class="simpleNote">This mode does not depend on Supabase or other teams' scores. It uses the published Mackenzie Cup bracket only.</div>
+      <div class="simpleNote">This mode uses the published Mackenzie Cup bracket. An actual knockout opponent is only shown when that opponent group's shared results are complete and its ranking is unambiguous; otherwise the page shows the bracket position, for example “2nd Group C”.</div>
 
       <div class="btns noPrint">
         <button class="action secondary" type="button" onclick="resetSimple()">Reset simple planner</button>
@@ -349,7 +349,7 @@ WGJS 6-6 Sun Valley Primary"></textarea>
   </section>
 
   <div class="footer">
-    termark/mackenzie-cup-2026 • page v0.8.4<br>
+    termark/mackenzie-cup-2026 • page v0.8.5<br>
     Static GitHub Pages app • results are stored locally in this browser
   </div>
 </div>
@@ -832,7 +832,11 @@ function simpleRoute(){
 }
 function simpleOpponent(route){
   if(!route)return "";
-  return teamAt(route.qf.oppGroup,route.qf.oppRank);
+  const st=groupStatus(route.qf.oppGroup);
+  if(st.complete && !st.provisional){
+    return teamAt(route.qf.oppGroup,route.qf.oppRank);
+  }
+  return `${ordinal(route.qf.oppRank)} Group ${route.qf.oppGroup}`;
 }
 function simplePlannerHTML(){
   const route=simpleRoute();

@@ -48,7 +48,7 @@ If nobody is able to capture all the other U13 results, the app is still useful.
 
 Open **Simple**, choose **Herschel U13A or U13B**. The team's fixed pool matches are shown first; then select the team's final group position. The app shows the corresponding published knockout route. As Herschel plays each knockout game, select **Win** or **Loss** to reveal the next scheduled match.
 
-This mode is stored locally in the browser and does **not** require Supabase authentication, shared results, or knowledge of every other pool score.
+This mode is stored locally in the browser and does **not** require Supabase authentication or knowledge of every other pool score. For knockout opponents, it shows the bracket placeholder (for example **2nd Group C**) unless the relevant shared group results are complete and the ranking is unambiguous; only then does it display the actual team name.
 
 
 ### Quick result import
@@ -172,7 +172,7 @@ Tournament structure, fixture times, groups, scoring rules and knockout brackets
 
 ## Current version
 
-**Page version: 0.8.4**
+**Page version: 0.8.5**
 
 ## Prize giving
 
