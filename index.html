@@ -9,63 +9,75 @@
 :root{
   --bg:#f4f6fa;--card:#fff;--ink:#172033;--muted:#687386;--line:#dfe5ee;
   --blue:#1f3f91;--blue2:#17316f;--soft:#eef3ff;--green:#0f766e;--greenSoft:#ecfdf5;
-  --orange:#9a4d0b;--orangeSoft:#fff7ed;--red:#b42318;--redSoft:#fff1f1;--shadow:0 8px 26px rgba(19,35,70,.08)
+  --orange:#9a4d0b;--orangeSoft:#fff7ed;--red:#b42318;--redSoft:#fff1f1;
+  --amber:#8a5a00;--amberSoft:#fff8db;--shadow:0 8px 26px rgba(19,35,70,.08)
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.wrap{max-width:760px;margin:auto;padding:14px 14px 54px}
+.wrap{max-width:860px;margin:auto;padding:14px 14px 54px}
 .hero{background:linear-gradient(135deg,var(--blue2),var(--blue));color:white;border-radius:20px;padding:22px 20px;box-shadow:var(--shadow)}
 .hero h1{margin:0 0 5px;font-size:clamp(1.7rem,7vw,2.35rem);line-height:1.08}
 .hero p{margin:0;color:#dbe7ff}
+.heroMeta{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+.metaPill{display:inline-block;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.13);font-size:.78rem}
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:14px;box-shadow:var(--shadow)}
 h2{margin:0 0 13px;font-size:1.08rem}
 h3{margin:17px 0 9px;font-size:1rem}
-.tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .tab{border:1px solid #ccd5e4;background:#f8fafc;color:#344054;padding:11px 8px;border-radius:12px;font-weight:800;cursor:pointer}
 .tab.active{background:var(--blue);color:#fff;border-color:var(--blue)}
 .next{background:linear-gradient(135deg,#eef3ff,#fafcff);border-color:#d8e1f7}
 .nextLabel{text-transform:uppercase;letter-spacing:.08em;font-size:.74rem;font-weight:850;color:var(--blue)}
 .nextTime{font-size:2.15rem;font-weight:900;color:var(--blue);margin:4px 0 0}
 .nextOpponent{font-size:1.18rem;font-weight:850}
-.sub{color:var(--muted);font-size:.9rem;margin-top:4px}
-.countdown{margin-top:8px;font-weight:800;color:#344054}
+.sub{color:var(--muted);font-size:.9rem;margin-top:4px;line-height:1.4}
 .match{display:grid;grid-template-columns:92px 72px 1fr;gap:9px;padding:13px 0;border-top:1px solid var(--line);align-items:start}
 .match:first-child{border-top:0;padding-top:0}
 .day{font-weight:760}.time{font-weight:900;color:var(--blue);font-variant-numeric:tabular-nums}
 .meta{font-size:.86rem;color:var(--muted);margin-top:4px}
 .badge{display:inline-block;border-radius:999px;padding:2px 7px;font-size:.74rem;font-weight:850;margin-left:5px;background:#edf1ff;color:#4438a8}
-.scoreRow{display:grid;grid-template-columns:1fr 70px 18px 70px 1fr;gap:7px;align-items:center;margin-top:10px}
+.scoreRow{display:grid;grid-template-columns:minmax(0,1fr) 62px 14px 62px minmax(0,1fr);gap:7px;align-items:center;margin-top:10px}
 .scoreRow input{width:100%;padding:10px;border:1px solid #cfd6e2;border-radius:10px;font-size:1rem;text-align:center}
-.scoreRow .teamLeft{text-align:right;font-weight:750}
-.scoreRow .teamRight{font-weight:750}
+.scoreRow .teamLeft{text-align:right;font-weight:750;min-width:0}.scoreRow .teamRight{font-weight:750;min-width:0}
 .resultTag{display:inline-block;margin-top:8px;padding:4px 8px;border-radius:999px;font-size:.77rem;font-weight:850}
-.winTag{background:var(--greenSoft);color:var(--green)}
-.lossTag{background:var(--redSoft);color:var(--red)}
-.drawTag{background:#f3f4f6;color:#52525b}
-.upcomingTag{background:#eef2ff;color:#4338ca}
-.table{width:100%;border-collapse:collapse;font-size:.9rem}
-.table th,.table td{padding:9px 6px;border-bottom:1px solid var(--line);text-align:center}
+.winTag{background:var(--greenSoft);color:var(--green)} .lossTag{background:var(--redSoft);color:var(--red)}
+.drawTag{background:#f3f4f6;color:#52525b}.upcomingTag{background:#eef2ff;color:#4338ca}
+.tableWrap{overflow-x:auto}
+.table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:560px}
+.table th,.table td{padding:9px 6px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
 .table th:first-child,.table td:first-child{text-align:left}
+.herschelRow{background:#f8faff}
+.rank{font-weight:900;color:var(--blue)}
 .routeBox{margin-top:13px;padding:14px;border:1px solid #d9e2f2;border-radius:13px;background:#fafcff}
 .routeTitle{font-weight:850;margin-bottom:8px}
 .outcomes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
 .outcome{border-radius:12px;padding:12px}.outcome strong{display:block;margin-bottom:3px}
 .ifwin{background:var(--greenSoft);border:1px solid #bdebdc}.ifloss{background:var(--orangeSoft);border:1px solid #fed7aa}
+.notice{padding:12px;border-radius:12px;font-size:.88rem;line-height:1.45}
+.warn{background:var(--amberSoft);border:1px solid #f1df9e;color:#6d5400}
+.ok{background:var(--greenSoft);border:1px solid #bdebdc;color:#115e59}
 select{width:100%;padding:13px 14px;border:1px solid #cfd6e2;border-radius:12px;background:white;font-size:1rem;color:var(--ink)}
 label{display:block;font-weight:750;margin-bottom:6px}
-.row{margin-top:13px}
-.hidden{display:none!important}
-.timelineItem{display:grid;grid-template-columns:88px 66px 1fr;gap:9px;padding:12px 0;border-top:1px solid var(--line)}
-.timelineItem:first-child{border-top:0;padding-top:0}
-.teamPill{display:inline-block;padding:2px 7px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:.73rem;font-weight:850;margin-left:5px}
+.row{margin-top:13px}.hidden{display:none!important}
+.resultGroup{margin-top:16px;padding-top:15px;border-top:1px solid var(--line)}
+.resultGroup:first-child{border-top:0;padding-top:0}
+.fixtureEntry{padding:12px 0;border-top:1px solid #edf0f4}
+.fixtureEntry:first-child{border-top:0}
+.fixtureTop{display:grid;grid-template-columns:84px 58px 1fr;gap:8px;align-items:start}
+.fixtureTeams{font-weight:780}
+.statusText{margin-top:6px}
 .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-button.action{border:0;border-radius:11px;padding:11px 14px;font-weight:800;cursor:pointer}
+button.action,a.action{border:0;border-radius:11px;padding:11px 14px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-block}
 .primary{background:var(--blue);color:white}.secondary{background:#e8edf5;color:#2f3b52}
-.notice{padding:12px;border-radius:12px;background:#fffdf4;border:1px solid #f6e6ad;color:#725d16;font-size:.88rem}
-@media(max-width:500px){
-  .match,.timelineItem{grid-template-columns:82px 60px 1fr;font-size:.94rem}
+.footer{margin-top:16px;text-align:center;color:var(--muted);font-size:.82rem;line-height:1.5}
+.projection{font-size:1rem;line-height:1.45}
+.projection strong{color:var(--blue)}
+@media(max-width:560px){
+  .tabs{grid-template-columns:1fr 1fr}
+  .match{grid-template-columns:82px 60px 1fr;font-size:.94rem}
+  .fixtureTop{grid-template-columns:78px 54px 1fr}
   .outcomes{grid-template-columns:1fr}
-  .scoreRow{grid-template-columns:1fr 58px 14px 58px 1fr;font-size:.9rem}
+  .scoreRow{grid-template-columns:minmax(0,1fr) 55px 12px 55px minmax(0,1fr);font-size:.88rem}
 }
 @media print{body{background:#fff}.wrap{max-width:none;padding:0}.card,.hero{box-shadow:none}.noPrint{display:none!important}}
 </style>
@@ -75,17 +87,22 @@ button.action{border:0;border-radius:11px;padding:11px 14px;font-weight:800;curs
   <section class="hero">
     <h1>Herschel U13<br>Mackenzie Cup 2026</h1>
     <p>Reddam House Constantia • 11–13 September 2026</p>
+    <div class="heroMeta">
+      <span class="metaPill">Repo: termark/mackenzie-cup-2026</span>
+      <span class="metaPill">Page version: 0.4.0</span>
+    </div>
   </section>
 
   <section class="card noPrint">
     <div class="tabs">
-      <button class="tab active" data-view="A">U13A</button>
-      <button class="tab" data-view="B">U13B</button>
+      <button class="tab active" data-view="A">Herschel A</button>
+      <button class="tab" data-view="B">Herschel B</button>
       <button class="tab" data-view="ALL">All Herschel</button>
+      <button class="tab" data-view="RESULTS">Results</button>
     </div>
   </section>
 
-  <section class="card next">
+  <section class="card next" id="nextCard">
     <div class="nextLabel">Next game</div>
     <div id="nextGame"></div>
   </section>
@@ -97,23 +114,18 @@ button.action{border:0;border-radius:11px;padding:11px 14px;font-weight:800;curs
     </section>
 
     <section class="card">
-      <h2>Pool progress</h2>
+      <h2 id="standingsTitle">Live group standings</h2>
       <div id="poolTable"></div>
-      <div class="sub">3 points for a win, 1 for a draw, 0 for a loss. Group position still needs to be selected because the page does not know the other teams' results.</div>
+      <div id="tieNotice" class="sub"></div>
+    </section>
+
+    <section class="card">
+      <h2>Projected knockout</h2>
+      <div id="projection" class="projection"></div>
     </section>
 
     <section class="card noPrint">
-      <h2>Knockout path</h2>
-      <div class="row">
-        <label for="groupPos">Final group position</label>
-        <select id="groupPos">
-          <option value="">Choose...</option>
-          <option value="1">1st in group</option>
-          <option value="2">2nd in group</option>
-          <option value="3">3rd in group</option>
-          <option value="4">4th in group</option>
-        </select>
-      </div>
+      <h2>Knockout results</h2>
       <div id="qfControls" class="row hidden">
         <label id="qfLabel" for="qfResult">Quarter-final result</label>
         <select id="qfResult">
@@ -132,13 +144,13 @@ button.action{border:0;border-radius:11px;padding:11px 14px;font-weight:800;curs
       </div>
       <div class="btns">
         <button class="action primary" onclick="window.print()">Print / Save PDF</button>
-        <button class="action secondary" onclick="resetCurrent()">Reset this team</button>
+        <button class="action secondary" onclick="resetKnockout()">Reset knockout</button>
       </div>
     </section>
 
     <section class="card">
       <h2>Projected knockout schedule</h2>
-      <div id="knockoutOutput" class="sub">Choose final group position to see the route.</div>
+      <div id="knockoutOutput" class="sub">Pool standings are still being determined.</div>
     </section>
   </section>
 
@@ -147,170 +159,306 @@ button.action{border:0;border-radius:11px;padding:11px 14px;font-weight:800;curs
     <div id="allTimeline"></div>
   </section>
 
-  <section class="card">
-    <h2>Tournament notes</h2>
-    <div class="notice">
-      Teams should be at the pool at least 30 minutes before their game. U13 pool games are 4 × 5 minutes running time; the U13 final is 4 × 5 minutes stop-start.
+  <section id="resultsView" class="hidden">
+    <section class="card">
+      <h2>All U13 pool results</h2>
+      <div class="sub">Enter any result you hear or see. The standings and Herschel projections update automatically.</div>
+      <div id="allResults"></div>
+    </section>
+    <section class="card">
+      <h2>All live group tables</h2>
+      <div id="allTables"></div>
+    </section>
+  </section>
+
+  <section class="card noPrint">
+    <h2>Resources</h2>
+    <div class="btns">
+      <a class="action primary" href="Mackenzie-Cup-2026.pdf" target="_blank" rel="noopener">Open official PDF</a>
+      <a class="action secondary" href="https://github.com/termark/mackenzie-cup-2026" target="_blank" rel="noopener">Open GitHub repo</a>
     </div>
   </section>
+
+  <section class="card">
+    <h2>Tournament notes</h2>
+    <div class="notice warn">
+      U13 scoring: 3 points for a win, 1 for a draw, 0 for a loss. The official tie-break order is head-to-head, then winner against the top team, then goal difference. Where a tie cannot be resolved safely from the entered data, this page marks the positions as provisional rather than inventing an order.
+    </div>
+  </section>
+
+  <div class="footer">
+    termark/mackenzie-cup-2026 • page v0.4.0<br>
+    Static GitHub Pages app • results are stored locally in this browser
+  </div>
 </div>
 
 <script>
-const teams={
- A:{name:"Herschel U13A",group:"A",pool:[
-  p("2026-09-11","Fri 11 Sep","16:00","St Cyprians B"),
-  p("2026-09-11","Fri 11 Sep","18:00","Springfield"),
-  p("2026-09-12","Sat 12 Sep","12:00","Oakhill Prep")
- ],routes:{
-  1:r("Sat 12 Sep","16:30","Cup QF3","2nd Group C","Sun 13 Sep","08:30","Cup SF2","Winner Cup QF4","Sun 13 Sep","09:30","Plate SF2","Loser Cup QF4","Sun 13 Sep","13:20","Cup Final","Winner Cup SF1","Sun 13 Sep","10:00","Cup 3rd/4th","Loser Cup SF1","Sun 13 Sep","13:00","Plate Final","Winner Plate SF1","Sun 13 Sep","11:30","Plate 3rd/4th","Loser Plate SF1"),
-  2:r("Sat 12 Sep","15:30","Cup QF1","1st Group C","Sun 13 Sep","08:00","Cup SF1","Winner Cup QF2","Sun 13 Sep","09:00","Plate SF1","Loser Cup QF2","Sun 13 Sep","13:20","Cup Final","Winner Cup SF2","Sun 13 Sep","10:00","Cup 3rd/4th","Loser Cup SF2","Sun 13 Sep","13:00","Plate Final","Winner Plate SF2","Sun 13 Sep","11:30","Plate 3rd/4th","Loser Plate SF2"),
-  3:r("Sat 12 Sep","14:30","Bowl QF3","4th Group C","Sat 12 Sep","18:00","Bowl SF2","Winner Bowl QF4","Sat 12 Sep","19:00","Shield SF2","Loser Bowl QF4","Sun 13 Sep","12:30","Bowl Final","Winner Bowl SF1","Sun 13 Sep","11:00","Bowl 3rd/4th","Loser Bowl SF1","Sun 13 Sep","12:00","Shield Final","Winner Shield SF1","Sun 13 Sep","10:30","Shield 3rd/4th","Loser Shield SF1"),
-  4:r("Sat 12 Sep","13:30","Bowl QF1","3rd Group C","Sat 12 Sep","17:30","Bowl SF1","Winner Bowl QF2","Sat 12 Sep","18:30","Shield SF1","Loser Bowl QF2","Sun 13 Sep","12:30","Bowl Final","Winner Bowl SF2","Sun 13 Sep","11:00","Bowl 3rd/4th","Loser Bowl SF2","Sun 13 Sep","12:00","Shield Final","Winner Shield SF2","Sun 13 Sep","10:30","Shield 3rd/4th","Loser Shield SF2")
- }},
- B:{name:"Herschel U13B",group:"D",pool:[
-  p("2026-09-11","Fri 11 Sep","17:30","Bridge House Prep"),
-  p("2026-09-12","Sat 12 Sep","08:00","Sun Valley Primary"),
-  p("2026-09-12","Sat 12 Sep","09:30","WGJS")
- ],routes:{
-  1:r("Sat 12 Sep","16:00","Cup QF2","2nd Group B","Sun 13 Sep","08:00","Cup SF1","Winner Cup QF1","Sun 13 Sep","09:00","Plate SF1","Loser Cup QF1","Sun 13 Sep","13:20","Cup Final","Winner Cup SF2","Sun 13 Sep","10:00","Cup 3rd/4th","Loser Cup SF2","Sun 13 Sep","13:00","Plate Final","Winner Plate SF2","Sun 13 Sep","11:30","Plate 3rd/4th","Loser Plate SF2"),
-  2:r("Sat 12 Sep","17:00","Cup QF4","1st Group B","Sun 13 Sep","08:30","Cup SF2","Winner Cup QF3","Sun 13 Sep","09:30","Plate SF2","Loser Cup QF3","Sun 13 Sep","13:20","Cup Final","Winner Cup SF1","Sun 13 Sep","10:00","Cup 3rd/4th","Loser Cup SF1","Sun 13 Sep","13:00","Plate Final","Winner Plate SF1","Sun 13 Sep","11:30","Plate 3rd/4th","Loser Plate SF1"),
-  3:r("Sat 12 Sep","14:00","Bowl QF2","4th Group B","Sat 12 Sep","17:30","Bowl SF1","Winner Bowl QF1","Sat 12 Sep","18:30","Shield SF1","Loser Bowl QF1","Sun 13 Sep","12:30","Bowl Final","Winner Bowl SF2","Sun 13 Sep","11:00","Bowl 3rd/4th","Loser Bowl SF2","Sun 13 Sep","12:00","Shield Final","Winner Shield SF2","Sun 13 Sep","10:30","Shield 3rd/4th","Loser Shield SF2"),
-  4:r("Sat 12 Sep","15:00","Bowl QF4","3rd Group B","Sat 12 Sep","18:00","Bowl SF2","Winner Bowl QF3","Sat 12 Sep","19:00","Shield SF2","Loser Bowl QF3","Sun 13 Sep","12:30","Bowl Final","Winner Bowl SF1","Sun 13 Sep","11:00","Bowl 3rd/4th","Loser Bowl SF1","Sun 13 Sep","12:00","Shield Final","Winner Shield SF1","Sun 13 Sep","10:30","Shield 3rd/4th","Loser Shield SF1")
- }}
+const groups={
+ A:["Oakhill Prep","St Cyprians B","Herschel A","Springfield"],
+ B:["Rhenish","Somerset College","Reddam Constantia B","St Cyprians A"],
+ C:["Reddam Constantia A","Rustenburg Girls Junior","Oakhurst","Glenwood House"],
+ D:["WGJS","Herschel B","Bridge House Prep","Sun Valley Primary"]
 };
-function p(date,day,time,opp){return{date,day,time,opponent:opp}}
-function m(day,time,label,opponent){return{day,time,label,opponent}}
-function r(qd,qt,ql,qo,wd,wt,wl,wo,ld,lt,ll,lo,wwd,wwt,wwl,wwo,wld,wlt,wll,wlo,lwd,lwt,lwl,lwo,lld,llt,lll,llo){
- return{qf:m(qd,qt,ql,qo),qfWin:m(wd,wt,wl,wo),qfLoss:m(ld,lt,ll,lo),winWin:m(wwd,wwt,wwl,wwo),winLoss:m(wld,wlt,wll,wlo),lossWin:m(lwd,lwt,lwl,lwo),lossLoss:m(lld,llt,lll,llo)}
+
+const fixtures=[
+ f("A","2026-09-11","Fri 11 Sep","14:00","Oakhill Prep","Springfield"),
+ f("B","2026-09-11","Fri 11 Sep","14:30","Rhenish","St Cyprians A"),
+ f("C","2026-09-11","Fri 11 Sep","15:00","Reddam Constantia A","Glenwood House"),
+ f("D","2026-09-11","Fri 11 Sep","15:30","WGJS","Sun Valley Primary"),
+ f("A","2026-09-11","Fri 11 Sep","16:00","St Cyprians B","Herschel A"),
+ f("B","2026-09-11","Fri 11 Sep","16:30","Somerset College","Reddam Constantia B"),
+ f("C","2026-09-11","Fri 11 Sep","17:00","Rustenburg Girls Junior","Oakhurst"),
+ f("D","2026-09-11","Fri 11 Sep","17:30","Herschel B","Bridge House Prep"),
+ f("A","2026-09-11","Fri 11 Sep","18:00","Springfield","Herschel A"),
+ f("B","2026-09-11","Fri 11 Sep","18:30","St Cyprians A","Reddam Constantia B"),
+ f("C","2026-09-11","Fri 11 Sep","19:00","Glenwood House","Oakhurst"),
+ f("D","2026-09-11","Fri 11 Sep","19:30","Sun Valley Primary","Bridge House Prep"),
+ f("D","2026-09-12","Sat 12 Sep","08:00","Herschel B","Sun Valley Primary"),
+ f("C","2026-09-12","Sat 12 Sep","08:30","Rustenburg Girls Junior","Glenwood House"),
+ f("A","2026-09-12","Sat 12 Sep","08:00","Oakhill Prep","St Cyprians B"),
+ f("B","2026-09-12","Sat 12 Sep","08:30","Rhenish","Somerset College"),
+ f("C","2026-09-12","Sat 12 Sep","09:00","Reddam Constantia A","Rustenburg Girls Junior"),
+ f("D","2026-09-12","Sat 12 Sep","09:30","WGJS","Herschel B"),
+ f("A","2026-09-12","Sat 12 Sep","10:00","St Cyprians B","Springfield"),
+ f("B","2026-09-12","Sat 12 Sep","10:30","Somerset College","St Cyprians A"),
+ f("C","2026-09-12","Sat 12 Sep","11:00","Oakhurst","Reddam Constantia A"),
+ f("D","2026-09-12","Sat 12 Sep","11:30","Bridge House Prep","WGJS"),
+ f("A","2026-09-12","Sat 12 Sep","12:00","Herschel A","Oakhill Prep"),
+ f("B","2026-09-12","Sat 12 Sep","12:30","Reddam Constantia B","Rhenish")
+];
+
+const routes={
+ A:{
+  1:r("Sat 12 Sep","16:30","Cup QF3","C",2,"Sun 13 Sep","08:30","Cup SF2","Sun 13 Sep","09:30","Plate SF2","Sun 13 Sep","13:20","Cup Final","Sun 13 Sep","10:00","Cup 3rd/4th","Sun 13 Sep","13:00","Plate Final","Sun 13 Sep","11:30","Plate 3rd/4th"),
+  2:r("Sat 12 Sep","15:30","Cup QF1","C",1,"Sun 13 Sep","08:00","Cup SF1","Sun 13 Sep","09:00","Plate SF1","Sun 13 Sep","13:20","Cup Final","Sun 13 Sep","10:00","Cup 3rd/4th","Sun 13 Sep","13:00","Plate Final","Sun 13 Sep","11:30","Plate 3rd/4th"),
+  3:r("Sat 12 Sep","14:30","Bowl QF3","C",4,"Sat 12 Sep","18:00","Bowl SF2","Sat 12 Sep","19:00","Shield SF2","Sun 13 Sep","12:30","Bowl Final","Sun 13 Sep","11:00","Bowl 3rd/4th","Sun 13 Sep","12:00","Shield Final","Sun 13 Sep","10:30","Shield 3rd/4th"),
+  4:r("Sat 12 Sep","13:30","Bowl QF1","C",3,"Sat 12 Sep","17:30","Bowl SF1","Sat 12 Sep","18:30","Shield SF1","Sun 13 Sep","12:30","Bowl Final","Sun 13 Sep","11:00","Bowl 3rd/4th","Sun 13 Sep","12:00","Shield Final","Sun 13 Sep","10:30","Shield 3rd/4th")
+ },
+ D:{
+  1:r("Sat 12 Sep","16:00","Cup QF2","B",2,"Sun 13 Sep","08:00","Cup SF1","Sun 13 Sep","09:00","Plate SF1","Sun 13 Sep","13:20","Cup Final","Sun 13 Sep","10:00","Cup 3rd/4th","Sun 13 Sep","13:00","Plate Final","Sun 13 Sep","11:30","Plate 3rd/4th"),
+  2:r("Sat 12 Sep","17:00","Cup QF4","B",1,"Sun 13 Sep","08:30","Cup SF2","Sun 13 Sep","09:30","Plate SF2","Sun 13 Sep","13:20","Cup Final","Sun 13 Sep","10:00","Cup 3rd/4th","Sun 13 Sep","13:00","Plate Final","Sun 13 Sep","11:30","Plate 3rd/4th"),
+  3:r("Sat 12 Sep","14:00","Bowl QF2","B",4,"Sat 12 Sep","17:30","Bowl SF1","Sat 12 Sep","18:30","Shield SF1","Sun 13 Sep","12:30","Bowl Final","Sun 13 Sep","11:00","Bowl 3rd/4th","Sun 13 Sep","12:00","Shield Final","Sun 13 Sep","10:30","Shield 3rd/4th"),
+  4:r("Sat 12 Sep","15:00","Bowl QF4","B",3,"Sat 12 Sep","18:00","Bowl SF2","Sat 12 Sep","19:00","Shield SF2","Sun 13 Sep","12:30","Bowl Final","Sun 13 Sep","11:00","Bowl 3rd/4th","Sun 13 Sep","12:00","Shield Final","Sun 13 Sep","10:30","Shield 3rd/4th")
+ }
+};
+
+function f(group,date,day,time,a,b){return{group,date,day,time,a,b,id:group+"_"+date+"_"+time.replace(":","")}}
+function r(qd,qt,ql,oppGroup,oppRank,wd,wt,wl,ld,lt,ll,wwd,wwt,wwl,wld,wlt,wll,lwd,lwt,lwl,lld,llt,lll){
+ return{qf:{day:qd,time:qt,label:ql,oppGroup,oppRank},qfWin:{day:wd,time:wt,label:wl},qfLoss:{day:ld,time:lt,label:ll},
+ winWin:{day:wwd,time:wwt,label:wwl},winLoss:{day:wld,time:wlt,label:wll},lossWin:{day:lwd,time:lwt,label:lwl},lossLoss:{day:lld,time:llt,label:lll}}
 }
+
 let view=localStorage.getItem("mc_view")||"A";
-let state=JSON.parse(localStorage.getItem("mc_state")||'{"A":{},"B":{}}');
-state.A=state.A||{}; state.B=state.B||{};
-function save(){localStorage.setItem("mc_state",JSON.stringify(state));localStorage.setItem("mc_view",view)}
+let scores=JSON.parse(localStorage.getItem("mc_scores")||"{}");
+let ko=JSON.parse(localStorage.getItem("mc_ko")||'{"A":{},"B":{}}');
+ko.A=ko.A||{};ko.B=ko.B||{};
+function save(){localStorage.setItem("mc_scores",JSON.stringify(scores));localStorage.setItem("mc_ko",JSON.stringify(ko));localStorage.setItem("mc_view",view)}
 function arrival(t){let[h,m]=t.split(":").map(Number),x=h*60+m-30;return String(Math.floor(x/60)).padStart(2,"0")+":"+String(x%60).padStart(2,"0")}
-function scoreKey(i,side){return "pool"+i+"_"+side}
-function resultFor(teamKey,i){
- const s=state[teamKey], a=Number(s[scoreKey(i,"for")]), b=Number(s[scoreKey(i,"against")]);
- if(s[scoreKey(i,"for")]===""||s[scoreKey(i,"against")]===""||s[scoreKey(i,"for")]==null||s[scoreKey(i,"against")]==null)return null;
- if(a>b)return"win";if(a<b)return"loss";return"draw";
+function getScore(id,side){return scores[id]?.[side] ?? ""}
+function setScore(id,side,v){scores[id]=scores[id]||{};scores[id][side]=v===""?"":Math.max(0,parseInt(v||0));save();render()}
+function played(fx){return getScore(fx.id,"a")!==""&&getScore(fx.id,"b")!==""}
+function resultText(fx){
+ if(!played(fx))return'<span class="resultTag upcomingTag">Upcoming</span>';
+ const a=Number(getScore(fx.id,"a")),b=Number(getScore(fx.id,"b"));
+ if(a===b)return'<span class="resultTag drawTag">Draw '+a+"–"+b+"</span>";
+ return'<span class="resultTag '+(a>b?"winTag":"lossTag")+'">'+a+"–"+b+"</span>";
 }
-function tag(res){
- if(!res)return'<span class="resultTag upcomingTag">Upcoming</span>';
- if(res==="win")return'<span class="resultTag winTag">Won</span>';
- if(res==="loss")return'<span class="resultTag lossTag">Lost</span>';
- return'<span class="resultTag drawTag">Draw</span>';
-}
-function poolHTML(teamKey){
- const t=teams[teamKey],s=state[teamKey];
- return t.pool.map((x,i)=>`
-  <div class="match">
-   <div class="day">${x.day}</div><div class="time">${x.time}</div>
-   <div><strong>vs ${x.opponent}</strong><div class="meta">arrive by ${arrival(x.time)}</div>${tag(resultFor(teamKey,i))}
-    <div class="scoreRow noPrint">
-      <div class="teamLeft">${t.name.replace("Herschel U13","Herschel ")}</div>
-      <input inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${s[scoreKey(i,"for")]??""}" onchange="setScore('${teamKey}',${i},'for',this.value)">
-      <div>–</div>
-      <input inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${s[scoreKey(i,"against")]??""}" onchange="setScore('${teamKey}',${i},'against',this.value)">
-      <div class="teamRight">${x.opponent}</div>
-    </div>
-   </div>
-  </div>`).join("");
-}
-function setScore(k,i,side,v){state[k][scoreKey(i,side)]=v===""?"":Math.max(0,parseInt(v||0));save();render()}
-function poolStats(k){
- let p=0,w=0,d=0,l=0,gf=0,ga=0,played=0;
- teams[k].pool.forEach((x,i)=>{
-  const s=state[k],fk=scoreKey(i,"for"),ak=scoreKey(i,"against");
-  if(s[fk]===""||s[ak]===""||s[fk]==null||s[ak]==null)return;
-  let a=Number(s[fk]),b=Number(s[ak]);played++;gf+=a;ga+=b;
-  if(a>b){w++;p+=3}else if(a===b){d++;p+=1}else l++;
+function stats(group){
+ const s={};groups[group].forEach(t=>s[t]={team:t,p:0,w:0,d:0,l:0,gf:0,ga:0,gd:0,pts:0});
+ fixtures.filter(x=>x.group===group).forEach(x=>{
+  if(!played(x))return;
+  const a=Number(getScore(x.id,"a")),b=Number(getScore(x.id,"b"));
+  const A=s[x.a],B=s[x.b]; A.p++;B.p++;A.gf+=a;A.ga+=b;B.gf+=b;B.ga+=a;
+  if(a>b){A.w++;B.l++;A.pts+=3}else if(a<b){B.w++;A.l++;B.pts+=3}else{A.d++;B.d++;A.pts++;B.pts++}
  });
- return{played,w,d,l,gf,ga,gd:gf-ga,p}
+ Object.values(s).forEach(x=>x.gd=x.gf-x.ga);
+ return s;
 }
-function tableHTML(k){
- const x=poolStats(k);
- return `<table class="table"><thead><tr><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr></thead>
- <tbody><tr><td><strong>${teams[k].name}</strong></td><td>${x.played}</td><td>${x.w}</td><td>${x.d}</td><td>${x.l}</td><td>${x.gf}</td><td>${x.ga}</td><td>${x.gd}</td><td><strong>${x.p}</strong></td></tr></tbody></table>`;
+function headToHead(group,t1,t2){
+ const fx=fixtures.find(x=>x.group===group&&((x.a===t1&&x.b===t2)||(x.a===t2&&x.b===t1)));
+ if(!fx||!played(fx))return 0;
+ const a=Number(getScore(fx.id,"a")),b=Number(getScore(fx.id,"b"));
+ if(a===b)return 0;
+ const winner=a>b?fx.a:fx.b;
+ return winner===t1?-1:1;
+}
+function standings(group){
+ const arr=Object.values(stats(group));
+ let provisional=false;
+ arr.sort((x,y)=>{
+  if(y.pts!==x.pts)return y.pts-x.pts;
+  const tied=arr.filter(z=>z.pts===x.pts);
+  if(tied.length===2){
+    const hh=headToHead(group,x.team,y.team);
+    if(hh!==0)return hh;
+  }else provisional=true;
+  // Official next criterion is "winner against the top team". We avoid over-interpreting
+  // multi-team ties and only fall through to GD as a provisional display aid.
+  if(y.gd!==x.gd)return y.gd-x.gd;
+  provisional=true;
+  return x.team.localeCompare(y.team);
+ });
+ // Any equal-points adjacency without decisive H2H is considered provisional.
+ for(let i=1;i<arr.length;i++) if(arr[i].pts===arr[i-1].pts && headToHead(group,arr[i-1].team,arr[i].team)===0) provisional=true;
+ return{arr,provisional};
+}
+function rankOf(group,team){return standings(group).arr.findIndex(x=>x.team===team)+1}
+function teamAt(group,rank){return standings(group).arr[rank-1]?.team||("Rank "+rank+" Group "+group)}
+function allGroupGamesComplete(group){return fixtures.filter(x=>x.group===group).every(played)}
+function groupStatus(group){
+ const st=standings(group);
+ return{...st,complete:allGroupGamesComplete(group)}
+}
+function herschelTeam(k){return k==="A"?"Herschel A":"Herschel B"}
+function herschelGroup(k){return k==="A"?"A":"D"}
+function teamFixtures(k){const team=herschelTeam(k);return fixtures.filter(x=>x.a===team||x.b===team)}
+function teamPoolHTML(k){
+ const team=herschelTeam(k);
+ return teamFixtures(k).map(x=>`
+ <div class="match">
+  <div class="day">${x.day}</div><div class="time">${x.time}</div>
+  <div><strong>vs ${x.a===team?x.b:x.a}</strong><div class="meta">arrive by ${arrival(x.time)}</div>${resultText(x)}
+   <div class="scoreRow noPrint">
+    <div class="teamLeft">${x.a}</div>
+    <input inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${getScore(x.id,"a")}" onchange="setScore('${x.id}','a',this.value)">
+    <div>–</div>
+    <input inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${getScore(x.id,"b")}" onchange="setScore('${x.id}','b',this.value)">
+    <div class="teamRight">${x.b}</div>
+   </div>
+  </div>
+ </div>`).join("");
+}
+function tableHTML(group){
+ const st=groupStatus(group);
+ return `<div class="tableWrap"><table class="table"><thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr></thead><tbody>`+
+ st.arr.map((x,i)=>`<tr class="${x.team.startsWith("Herschel")?"herschelRow":""}"><td class="rank">${i+1}</td><td><strong>${x.team}</strong></td><td>${x.p}</td><td>${x.w}</td><td>${x.d}</td><td>${x.l}</td><td>${x.gf}</td><td>${x.ga}</td><td>${x.gd}</td><td><strong>${x.pts}</strong></td></tr>`).join("")+
+ `</tbody></table></div>`;
+}
+function projectionHTML(k){
+ const group=herschelGroup(k),team=herschelTeam(k),st=groupStatus(group),rank=rankOf(group,team),route=routes[group][rank];
+ const oppSt=groupStatus(route.qf.oppGroup),opp=teamAt(route.qf.oppGroup,route.qf.oppRank);
+ const ownLabel=st.complete&&!st.provisional?"Confirmed":"Current projection";
+ const oppLabel=oppSt.complete&&!oppSt.provisional?"Confirmed opponent":"Current possible opponent";
+ return `<div><strong>${ownLabel}: ${ordinal(rank)} in Group ${group}</strong></div>
+ <div style="margin-top:7px">${route.qf.label} • ${route.qf.day} at <strong>${route.qf.time}</strong></div>
+ <div>${oppLabel}: <strong>${opp}</strong></div>
+ <div class="sub">${(!st.complete||st.provisional||!oppSt.complete||oppSt.provisional)?"This can still change as remaining pool results are entered.":"Pool positions are complete from the entered results."}</div>`;
+}
+function qfWithOpponent(k){
+ const group=herschelGroup(k),team=herschelTeam(k),rank=rankOf(group,team),route=routes[group][rank];
+ return {...route.qf,opponent:teamAt(route.qf.oppGroup,route.qf.oppRank)};
+}
+function matchBlock(x){
+ return `<div class="match"><div class="day">${x.day}</div><div class="time">${x.time}</div><div><strong>${x.label}</strong><span class="badge">${x.label}</span><div class="meta">${x.opponent?"vs "+x.opponent+" • ":""}arrive by ${arrival(x.time)}</div></div></div>`;
+}
+function outcomes(title,w,l){
+ return `<div class="routeBox"><div class="routeTitle">${title}</div><div class="outcomes">
+ <div class="outcome ifwin"><strong>If WIN</strong>${w.day} • <b>${w.time}</b><div class="small">${w.label}</div></div>
+ <div class="outcome ifloss"><strong>If LOSS</strong>${l.day} • <b>${l.time}</b><div class="small">${l.label}</div></div>
+ </div></div>`;
 }
 function knockoutHTML(k){
- const s=state[k],pos=s.groupPos;
- if(!pos)return`Choose ${teams[k].name}'s final Group ${teams[k].group} position to see the route.`;
- const r=teams[k].routes[pos];let out=`<div><strong>${ordinal(pos)} in Group ${teams[k].group}</strong></div>${matchBlock(r.qf)}`;
- if(!s.qfResult)out+=outcomes("Next match after "+r.qf.label,r.qfWin,r.qfLoss);
- else if(s.qfResult==="win"){
-  out+=matchBlock(r.qfWin);
-  if(!s.sfResult)out+=outcomes("Next match after "+r.qfWin.label,r.winWin,r.winLoss);
-  else out+=matchBlock(s.sfResult==="win"?r.winWin:r.winLoss);
+ const group=herschelGroup(k),team=herschelTeam(k),rank=rankOf(group,team),route=routes[group][rank],s=ko[k],qf=qfWithOpponent(k);
+ let out=matchBlock(qf);
+ if(!s.qfResult) return out+outcomes("Next match after "+route.qf.label,route.qfWin,route.qfLoss);
+ if(s.qfResult==="win"){
+  out+=matchBlock(route.qfWin);
+  if(!s.sfResult)return out+outcomes("Next match after "+route.qfWin.label,route.winWin,route.winLoss);
+  return out+matchBlock(s.sfResult==="win"?route.winWin:route.winLoss);
  }else{
-  out+=matchBlock(r.qfLoss);
-  if(!s.sfResult)out+=outcomes("Next match after "+r.qfLoss.label,r.lossWin,r.lossLoss);
-  else out+=matchBlock(s.sfResult==="win"?r.lossWin:r.lossLoss);
+  out+=matchBlock(route.qfLoss);
+  if(!s.sfResult)return out+outcomes("Next match after "+route.qfLoss.label,route.lossWin,route.lossLoss);
+  return out+matchBlock(s.sfResult==="win"?route.lossWin:route.lossLoss);
  }
- return out;
 }
-function matchBlock(x){return`<div class="match"><div class="day">${x.day}</div><div class="time">${x.time}</div><div><strong>${x.label}</strong><span class="badge">${x.label}</span><div class="meta">vs ${x.opponent} • arrive by ${arrival(x.time)}</div></div></div>`}
-function outcomes(title,w,l){return`<div class="routeBox"><div class="routeTitle">${title}</div><div class="outcomes"><div class="outcome ifwin"><strong>If WIN</strong>${w.day} • <b>${w.time}</b><div class="small">${w.label}</div></div><div class="outcome ifloss"><strong>If LOSS</strong>${l.day} • <b>${l.time}</b><div class="small">${l.label}</div></div></div></div>`}
-function ordinal(n){return({1:"1st",2:"2nd",3:"3rd",4:"4th"})[n]}
-function nextKnownFor(k){
- const t=teams[k],s=state[k];
- for(let i=0;i<t.pool.length;i++)if(!resultFor(k,i))return{...t.pool[i],label:"vs "+t.pool[i].opponent};
- if(!s.groupPos)return null;
- const r=t.routes[s.groupPos];
- if(!s.qfResult)return r.qf;
- if(!s.sfResult)return s.qfResult==="win"?r.qfWin:r.qfLoss;
- return s.qfResult==="win"?(s.sfResult==="win"?r.winWin:r.winLoss):(s.sfResult==="win"?r.lossWin:r.lossLoss);
+function resultEntry(fx){
+ return `<div class="fixtureEntry">
+ <div class="fixtureTop"><div class="day">${fx.day}</div><div class="time">${fx.time}</div><div><div class="fixtureTeams">${fx.a} vs ${fx.b}</div><div class="meta">Group ${fx.group}</div></div></div>
+ <div class="scoreRow">
+  <div class="teamLeft">${fx.a}</div>
+  <input inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${getScore(fx.id,"a")}" onchange="setScore('${fx.id}','a',this.value)">
+  <div>–</div>
+  <input inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${getScore(fx.id,"b")}" onchange="setScore('${fx.id}','b',this.value)">
+  <div class="teamRight">${fx.b}</div>
+ </div>
+ <div class="statusText">${resultText(fx)}</div>
+ </div>`;
 }
-function allTimelineHTML(){
- let xs=[];
- for(const k of ["A","B"])teams[k].pool.forEach((x,i)=>xs.push({...x,k,i}));
+function resultsHTML(){
+ return ["A","B","C","D"].map(g=>`<div class="resultGroup"><h3>Group ${g}</h3>${fixtures.filter(x=>x.group===g).map(resultEntry).join("")}</div>`).join("");
+}
+function allTablesHTML(){
+ return ["A","B","C","D"].map(g=>{
+  const st=groupStatus(g);
+  return `<div class="resultGroup"><h3>Group ${g}</h3>${tableHTML(g)}<div class="sub">${st.complete?"All pool games entered.":"Pool results incomplete."}${st.provisional?" Standings include an unresolved/provisional tie-break.":""}</div></div>`;
+ }).join("");
+}
+function allHerschelHTML(){
+ const xs=[...teamFixtures("A").map(x=>({...x,k:"A"})),...teamFixtures("B").map(x=>({...x,k:"B"}))];
  xs.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
- return xs.map(x=>`<div class="timelineItem"><div class="day">${x.day}</div><div class="time">${x.time}</div><div><strong>${teams[x.k].name} vs ${x.opponent}</strong><span class="teamPill">${x.k}</span><div class="meta">arrive by ${arrival(x.time)}</div>${tag(resultFor(x.k,x.i))}</div></div>`).join("");
+ return xs.map(x=>`<div class="match"><div class="day">${x.day}</div><div class="time">${x.time}</div><div><strong>${x.a} vs ${x.b}</strong><span class="badge">${x.k}</span><div class="meta">arrive by ${arrival(x.time)}</div>${resultText(x)}</div></div>`).join("");
 }
 function nextGameHTML(){
- if(view==="ALL"){
-  const candidates=["A","B"].map(k=>({k,x:nextKnownFor(k)})).filter(z=>z.x);
-  if(!candidates.length)return`<div class="nextOpponent">No next match selected yet</div><div class="sub">Enter results/group positions as the tournament progresses.</div>`;
-  candidates.sort((a,b)=>sortKey(a.x).localeCompare(sortKey(b.x)));
-  const z=candidates[0],x=z.x;
-  return `<div class="nextTime">${x.time}</div><div class="nextOpponent">${teams[z.k].name} • ${x.label||("vs "+x.opponent)}</div><div class="sub">${x.day}${x.opponent&&x.label&&!x.label.startsWith("vs ")?" • vs "+x.opponent:""} • arrive by ${arrival(x.time)}</div>`;
- }
- const x=nextKnownFor(view);
- if(!x)return`<div class="nextOpponent">Pool complete</div><div class="sub">Choose the final group position to continue.</div>`;
- return `<div class="nextTime">${x.time}</div><div class="nextOpponent">${x.label||("vs "+x.opponent)}</div><div class="sub">${x.day}${x.opponent&&x.label&&!x.label.startsWith("vs ")?" • vs "+x.opponent:""} • arrive by ${arrival(x.time)}</div>`;
+ const ks=view==="ALL"?["A","B"]:[view==="A"||view==="B"?view:"A"];
+ const candidates=[];
+ ks.forEach(k=>{
+  const pending=teamFixtures(k).find(x=>!played(x));
+  if(pending)candidates.push({k,day:pending.day,date:pending.date,time:pending.time,label:"vs "+(pending.a===herschelTeam(k)?pending.b:pending.a),opponent:""});
+  else{
+    const group=herschelGroup(k),rank=rankOf(group,herschelTeam(k)),route=routes[group][rank],s=ko[k],qf=qfWithOpponent(k);
+    let x=!s.qfResult?qf:(!s.sfResult?(s.qfResult==="win"?route.qfWin:route.qfLoss):(s.qfResult==="win"?(s.sfResult==="win"?route.winWin:route.winLoss):(s.sfResult==="win"?route.lossWin:route.lossLoss)));
+    candidates.push({k,...x,date:dateForDay(x.day)});
+  }
+ });
+ candidates.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+ const x=candidates[0];
+ if(!x)return`<div class="nextOpponent">No next match available</div>`;
+ return `<div class="nextTime">${x.time}</div><div class="nextOpponent">${view==="ALL"?herschelTeam(x.k)+" • ":""}${x.label}</div><div class="sub">${x.day}${x.opponent?" • vs "+x.opponent:""} • arrive by ${arrival(x.time)}</div>`;
 }
-function sortKey(x){
- const map={"Fri 11 Sep":"2026-09-11","Sat 12 Sep":"2026-09-12","Sun 13 Sep":"2026-09-13"};
- return (x.date||map[x.day]||"9999-99-99")+x.time;
-}
-function resetCurrent(){if(view==="A"||view==="B"){state[view]={};save();render()}}
+function dateForDay(day){return day.startsWith("Fri")?"2026-09-11":day.startsWith("Sat")?"2026-09-12":"2026-09-13"}
+function ordinal(n){return({1:"1st",2:"2nd",3:"3rd",4:"4th"})[n]}
+
+function resetKnockout(){if(view==="A"||view==="B"){ko[view]={};save();render()}}
 function setView(v){view=v;save();render()}
 function render(){
  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.view===view));
- document.getElementById("nextGame").innerHTML=nextGameHTML();
+ document.getElementById("nextCard").classList.toggle("hidden",view==="RESULTS");
+ if(view!=="RESULTS")document.getElementById("nextGame").innerHTML=nextGameHTML();
+
+ document.getElementById("teamView").classList.toggle("hidden",!(view==="A"||view==="B"));
+ document.getElementById("allView").classList.toggle("hidden",view!=="ALL");
+ document.getElementById("resultsView").classList.toggle("hidden",view!=="RESULTS");
+
  if(view==="ALL"){
-  document.getElementById("teamView").classList.add("hidden");
-  document.getElementById("allView").classList.remove("hidden");
-  document.getElementById("allTimeline").innerHTML=allTimelineHTML();
+  document.getElementById("allTimeline").innerHTML=allHerschelHTML();
   return;
  }
- document.getElementById("teamView").classList.remove("hidden");
- document.getElementById("allView").classList.add("hidden");
- const t=teams[view],s=state[view];
- document.getElementById("poolTitle").textContent=t.name+" • Group "+t.group+" pool matches";
- document.getElementById("poolSchedule").innerHTML=poolHTML(view);
- document.getElementById("poolTable").innerHTML=tableHTML(view);
- const gp=document.getElementById("groupPos"),qf=document.getElementById("qfResult"),sf=document.getElementById("sfResult");
- gp.value=s.groupPos||"";qf.value=s.qfResult||"";sf.value=s.sfResult||"";
- const qfc=document.getElementById("qfControls"),sfc=document.getElementById("sfControls");
- qfc.classList.toggle("hidden",!s.groupPos);
- sfc.classList.toggle("hidden",!s.qfResult);
- if(s.groupPos){const r=t.routes[s.groupPos];document.getElementById("qfLabel").textContent=r.qf.label+" result";if(s.qfResult)document.getElementById("sfLabel").textContent=(s.qfResult==="win"?r.qfWin.label:r.qfLoss.label)+" result"}
- document.getElementById("knockoutOutput").innerHTML=knockoutHTML(view);
+ if(view==="RESULTS"){
+  document.getElementById("allResults").innerHTML=resultsHTML();
+  document.getElementById("allTables").innerHTML=allTablesHTML();
+  return;
+ }
+
+ const k=view,group=herschelGroup(k),st=groupStatus(group);
+ document.getElementById("poolTitle").textContent=herschelTeam(k)+" • Group "+group+" pool matches";
+ document.getElementById("poolSchedule").innerHTML=teamPoolHTML(k);
+ document.getElementById("standingsTitle").textContent="Live Group "+group+" standings";
+ document.getElementById("poolTable").innerHTML=tableHTML(group);
+ document.getElementById("tieNotice").innerHTML=(st.provisional?'<div class="notice warn">Standings are provisional because an official tie-break may still be required.</div>':"");
+ document.getElementById("projection").innerHTML=projectionHTML(k);
+
+ const rank=rankOf(group,herschelTeam(k)),route=routes[group][rank],s=ko[k];
+ document.getElementById("qfControls").classList.remove("hidden");
+ document.getElementById("qfLabel").textContent=route.qf.label+" result";
+ document.getElementById("qfResult").value=s.qfResult||"";
+ document.getElementById("sfControls").classList.toggle("hidden",!s.qfResult);
+ document.getElementById("sfResult").value=s.sfResult||"";
+ if(s.qfResult)document.getElementById("sfLabel").textContent=(s.qfResult==="win"?route.qfWin.label:route.qfLoss.label)+" result";
+ document.getElementById("knockoutOutput").innerHTML=knockoutHTML(k);
 }
 document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>setView(b.dataset.view)));
-document.getElementById("groupPos").addEventListener("change",e=>{state[view].groupPos=e.target.value;state[view].qfResult="";state[view].sfResult="";save();render()});
-document.getElementById("qfResult").addEventListener("change",e=>{state[view].qfResult=e.target.value;state[view].sfResult="";save();render()});
-document.getElementById("sfResult").addEventListener("change",e=>{state[view].sfResult=e.target.value;save();render()});
+document.getElementById("qfResult").addEventListener("change",e=>{ko[view].qfResult=e.target.value;ko[view].sfResult="";save();render()});
+document.getElementById("sfResult").addEventListener("change",e=>{ko[view].sfResult=e.target.value;save();render()});
 render();
 </script>
 </body>
