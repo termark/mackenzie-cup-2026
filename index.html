@@ -23,7 +23,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:14px;box-shadow:var(--shadow)}
 h2{margin:0 0 13px;font-size:1.08rem}
 h3{margin:17px 0 9px;font-size:1rem}
-.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 .tab{border:1px solid #ccd5e4;background:#f8fafc;color:#344054;padding:11px 8px;border-radius:12px;font-weight:800;cursor:pointer}
 .tab.active{background:var(--blue);color:#fff;border-color:var(--blue)}
 .next{background:linear-gradient(135deg,#eef3ff,#fafcff);border-color:#d8e1f7}
@@ -80,6 +80,15 @@ button.action,a.action{border:0;border-radius:11px;padding:11px 14px;font-weight
 .allPrimary strong{font-size:1rem}
 .nextTeamBadge{margin-bottom:8px}
 
+
+.simpleHero{background:linear-gradient(135deg,#f8fbff,#eef3ff);border:1px solid #d9e3f7}
+.simpleGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.simpleSummary{margin-top:14px;padding:14px;border-radius:13px;background:#fafcff;border:1px solid #d9e2f2}
+.simpleNote{margin-top:10px;font-size:.86rem;color:var(--muted);line-height:1.4}
+@media(max-width:560px){
+  .simpleGrid{grid-template-columns:1fr}
+}
+
 .footer{margin-top:16px;text-align:center;color:var(--muted);font-size:.82rem;line-height:1.5}
 .projection{font-size:1rem;line-height:1.45}
 .projection strong{color:var(--blue)}
@@ -109,7 +118,7 @@ button.action,a.action{border:0;border-radius:11px;padding:11px 14px;font-weight
     <p>Reddam House Constantia • 11–13 September 2026</p>
     <div class="heroMeta">
       <span class="metaPill">Repo: termark/mackenzie-cup-2026</span>
-      <span class="metaPill">Page version: 0.5.1</span>
+      <span class="metaPill">Page version: 0.6.0</span>
     </div>
     <div class="authbar noPrint">
       <span id="authState" class="authstate">Connecting…</span>
@@ -135,6 +144,7 @@ button.action,a.action{border:0;border-radius:11px;padding:11px 14px;font-weight
       <button class="tab" data-view="B">Herschel B</button>
       <button class="tab" data-view="ALL">All Herschel</button>
       <button class="tab" data-view="RESULTS">Results</button>
+      <button class="tab" data-view="SIMPLE">Simple</button>
     </div>
   </section>
 
@@ -208,6 +218,64 @@ button.action,a.action{border:0;border-radius:11px;padding:11px 14px;font-weight
     </section>
   </section>
 
+
+  <section id="simpleView" class="hidden">
+    <section class="card simpleHero">
+      <h2>Simple schedule planner</h2>
+      <div class="sub">Use this if you don't have all the tournament results. Pick the Herschel team, enter its final group position, then select win/loss as the knockout games are played. This planner works locally on the device and does not require editor access.</div>
+    </section>
+
+    <section class="card">
+      <div class="simpleGrid">
+        <div>
+          <label for="simpleTeam">Team</label>
+          <select id="simpleTeam">
+            <option value="A">Herschel U13A</option>
+            <option value="B">Herschel U13B</option>
+          </select>
+        </div>
+        <div>
+          <label for="simplePos">Final group position</label>
+          <select id="simplePos">
+            <option value="">Choose...</option>
+            <option value="1">1st in group</option>
+            <option value="2">2nd in group</option>
+            <option value="3">3rd in group</option>
+            <option value="4">4th in group</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="simpleQfWrap" class="row hidden">
+        <label id="simpleQfLabel" for="simpleQf">Quarter-final result</label>
+        <select id="simpleQf">
+          <option value="">Not played yet</option>
+          <option value="win">Win</option>
+          <option value="loss">Loss</option>
+        </select>
+      </div>
+
+      <div id="simpleSfWrap" class="row hidden">
+        <label id="simpleSfLabel" for="simpleSf">Semi-final result</label>
+        <select id="simpleSf">
+          <option value="">Not played yet</option>
+          <option value="win">Win</option>
+          <option value="loss">Loss</option>
+        </select>
+      </div>
+
+      <div id="simpleOutput" class="simpleSummary">
+        Choose the final group position to see the knockout route.
+      </div>
+
+      <div class="simpleNote">This mode does not depend on Supabase or other teams' scores. It uses the published Mackenzie Cup bracket only.</div>
+
+      <div class="btns noPrint">
+        <button class="action secondary" type="button" onclick="resetSimple()">Reset simple planner</button>
+      </div>
+    </section>
+  </section>
+
   <section class="card noPrint">
     <h2>Resources</h2>
     <div class="btns">
@@ -224,7 +292,7 @@ button.action,a.action{border:0;border-radius:11px;padding:11px 14px;font-weight
   </section>
 
   <div class="footer">
-    termark/mackenzie-cup-2026 • page v0.5.1<br>
+    termark/mackenzie-cup-2026 • page v0.6.0<br>
     Static GitHub Pages app • results are stored locally in this browser
   </div>
 </div>
@@ -292,6 +360,7 @@ const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 let view=localStorage.getItem("mc_view")||"A";
 let scores=JSON.parse(localStorage.getItem("mc_scores_cache")||"{}");
 let ko=JSON.parse(localStorage.getItem("mc_ko")||'{"A":{},"B":{}}');
+let simple=JSON.parse(localStorage.getItem("mc_simple")||'{"team":"A","pos":"","qf":"","sf":""}');
 let currentUser=null;
 let lastSync=null;
 ko.A=ko.A||{};ko.B=ko.B||{};
@@ -299,6 +368,7 @@ ko.A=ko.A||{};ko.B=ko.B||{};
 function saveLocal(){
  localStorage.setItem("mc_scores_cache",JSON.stringify(scores));
  localStorage.setItem("mc_ko",JSON.stringify(ko));
+ localStorage.setItem("mc_simple",JSON.stringify(simple));
  localStorage.setItem("mc_view",view);
 }
 function save(){saveLocal()}
@@ -506,16 +576,82 @@ function nextGameHTML(){
 function dateForDay(day){return day.startsWith("Fri")?"2026-09-11":day.startsWith("Sat")?"2026-09-12":"2026-09-13"}
 function ordinal(n){return({1:"1st",2:"2nd",3:"3rd",4:"4th"})[n]}
 
+
+function simpleRoute(){
+  const team=simple.team||"A";
+  const group=herschelGroup(team);
+  if(!simple.pos)return null;
+  return routes[group][simple.pos];
+}
+function simpleOpponent(route){
+  if(!route)return "";
+  return teamAt(route.qf.oppGroup,route.qf.oppRank);
+}
+function simplePlannerHTML(){
+  const route=simpleRoute();
+  if(!route)return "Choose the final group position to see the knockout route.";
+  const opp=simpleOpponent(route);
+  const qf={...route.qf,opponent:opp};
+  let out=`<div><strong>${herschelTeam(simple.team)} • ${ordinal(simple.pos)} in Group ${herschelGroup(simple.team)}</strong></div>`;
+  out+=matchBlock(qf);
+
+  if(!simple.qf){
+    out+=outcomes("Next match after "+route.qf.label,route.qfWin,route.qfLoss);
+    return out;
+  }
+
+  if(simple.qf==="win"){
+    out+=matchBlock(route.qfWin);
+    if(!simple.sf){
+      out+=outcomes("Next match after "+route.qfWin.label,route.winWin,route.winLoss);
+    }else{
+      out+=matchBlock(simple.sf==="win"?route.winWin:route.winLoss);
+    }
+  }else{
+    out+=matchBlock(route.qfLoss);
+    if(!simple.sf){
+      out+=outcomes("Next match after "+route.qfLoss.label,route.lossWin,route.lossLoss);
+    }else{
+      out+=matchBlock(simple.sf==="win"?route.lossWin:route.lossLoss);
+    }
+  }
+  return out;
+}
+function renderSimple(){
+  document.getElementById("simpleTeam").value=simple.team||"A";
+  document.getElementById("simplePos").value=simple.pos||"";
+  document.getElementById("simpleQf").value=simple.qf||"";
+  document.getElementById("simpleSf").value=simple.sf||"";
+
+  const route=simpleRoute();
+  document.getElementById("simpleQfWrap").classList.toggle("hidden",!route);
+  document.getElementById("simpleSfWrap").classList.toggle("hidden",!route||!simple.qf);
+
+  if(route){
+    document.getElementById("simpleQfLabel").textContent=route.qf.label+" result";
+    if(simple.qf){
+      document.getElementById("simpleSfLabel").textContent=(simple.qf==="win"?route.qfWin.label:route.qfLoss.label)+" result";
+    }
+  }
+  document.getElementById("simpleOutput").innerHTML=simplePlannerHTML();
+}
+function resetSimple(){
+  simple={team:simple.team||"A",pos:"",qf:"",sf:""};
+  saveLocal();
+  renderSimple();
+}
+
 function resetKnockout(){if(view==="A"||view==="B"){ko[view]={};save();render()}}
 function setView(v){view=v;save();render()}
 function render(){
  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.view===view));
- document.getElementById("nextCard").classList.toggle("hidden",view==="RESULTS");
+ document.getElementById("nextCard").classList.toggle("hidden",view==="RESULTS"||view==="SIMPLE");
  if(view!=="RESULTS")document.getElementById("nextGame").innerHTML=nextGameHTML();
 
  document.getElementById("teamView").classList.toggle("hidden",!(view==="A"||view==="B"));
  document.getElementById("allView").classList.toggle("hidden",view!=="ALL");
  document.getElementById("resultsView").classList.toggle("hidden",view!=="RESULTS");
+ document.getElementById("simpleView").classList.toggle("hidden",view!=="SIMPLE");
 
  if(view==="ALL"){
   document.getElementById("allTimeline").innerHTML=allHerschelHTML();
@@ -524,6 +660,10 @@ function render(){
  if(view==="RESULTS"){
   document.getElementById("allResults").innerHTML=resultsHTML();
   document.getElementById("allTables").innerHTML=allTablesHTML();
+  return;
+ }
+ if(view==="SIMPLE"){
+  renderSimple();
   return;
  }
 
@@ -603,6 +743,12 @@ async function doSignOut(){
 document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>setView(b.dataset.view)));
 document.getElementById("qfResult").addEventListener("change",e=>{ko[view].qfResult=e.target.value;ko[view].sfResult="";save();render()});
 document.getElementById("sfResult").addEventListener("change",e=>{ko[view].sfResult=e.target.value;save();render()});
+
+
+document.getElementById("simpleTeam").addEventListener("change",e=>{simple.team=e.target.value;simple.pos="";simple.qf="";simple.sf="";saveLocal();renderSimple()});
+document.getElementById("simplePos").addEventListener("change",e=>{simple.pos=e.target.value;simple.qf="";simple.sf="";saveLocal();renderSimple()});
+document.getElementById("simpleQf").addEventListener("change",e=>{simple.qf=e.target.value;simple.sf="";saveLocal();renderSimple()});
+document.getElementById("simpleSf").addEventListener("change",e=>{simple.sf=e.target.value;saveLocal();renderSimple()});
 
 document.getElementById("authButton").addEventListener("click",()=>document.getElementById("authPanel").classList.remove("hidden"));
 document.getElementById("cancelLoginButton").addEventListener("click",()=>document.getElementById("authPanel").classList.add("hidden"));
