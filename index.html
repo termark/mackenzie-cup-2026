@@ -79,8 +79,17 @@ button.action,a.action{border:0;border-radius:11px;padding:11px 14px;font-weight
   .outcomes{grid-template-columns:1fr}
   .scoreRow{grid-template-columns:minmax(0,1fr) 55px 12px 55px minmax(0,1fr);font-size:.88rem}
 }
+
+.authbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.authstate{font-size:.82rem;padding:5px 9px;border-radius:999px;background:rgba(255,255,255,.13)}
+.authpanel{margin-top:12px;padding:12px;border-radius:12px;background:#f8fafc;border:1px solid var(--line)}
+.authpanel input{width:100%;padding:11px 12px;border:1px solid #cfd6e2;border-radius:10px;font-size:1rem;margin-top:8px}
+.syncLine{font-size:.82rem;color:var(--muted);margin-top:8px}
+.readonly{opacity:.62}
+
 @media print{body{background:#fff}.wrap{max-width:none;padding:0}.card,.hero{box-shadow:none}.noPrint{display:none!important}}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <div class="wrap">
@@ -89,7 +98,23 @@ button.action,a.action{border:0;border-radius:11px;padding:11px 14px;font-weight
     <p>Reddam House Constantia • 11–13 September 2026</p>
     <div class="heroMeta">
       <span class="metaPill">Repo: termark/mackenzie-cup-2026</span>
-      <span class="metaPill">Page version: 0.4.0</span>
+      <span class="metaPill">Page version: 0.5.0</span>
+    </div>
+    <div class="authbar noPrint">
+      <span id="authState" class="authstate">Connecting…</span>
+      <button id="authButton" class="action secondary" type="button">Editor sign in</button>
+      <button id="signOutButton" class="action secondary hidden" type="button">Sign out</button>
+    </div>
+    <div id="authPanel" class="authpanel hidden noPrint">
+      <strong>Editor sign in</strong>
+      <div class="sub">Public visitors can view shared results. Sign in only to enter or change scores.</div>
+      <input id="authEmail" type="email" autocomplete="username" placeholder="Email address">
+      <input id="authPassword" type="password" autocomplete="current-password" placeholder="Password">
+      <div class="btns">
+        <button id="loginButton" class="action primary" type="button">Sign in</button>
+        <button id="cancelLoginButton" class="action secondary" type="button">Cancel</button>
+      </div>
+      <div id="authMessage" class="syncLine"></div>
     </div>
   </section>
 
@@ -162,7 +187,8 @@ button.action,a.action{border:0;border-radius:11px;padding:11px 14px;font-weight
   <section id="resultsView" class="hidden">
     <section class="card">
       <h2>All U13 pool results</h2>
-      <div class="sub">Enter any result you hear or see. The standings and Herschel projections update automatically.</div>
+      <div class="sub">Shared results are loaded from Supabase. Only a signed-in editor can enter or change scores.</div>
+      <div id="syncStatus" class="syncLine">Connecting to shared results…</div>
       <div id="allResults"></div>
     </section>
     <section class="card">
@@ -187,7 +213,7 @@ button.action,a.action{border:0;border-radius:11px;padding:11px 14px;font-weight
   </section>
 
   <div class="footer">
-    termark/mackenzie-cup-2026 • page v0.4.0<br>
+    termark/mackenzie-cup-2026 • page v0.5.0<br>
     Static GitHub Pages app • results are stored locally in this browser
   </div>
 </div>
@@ -248,14 +274,50 @@ function r(qd,qt,ql,oppGroup,oppRank,wd,wt,wl,ld,lt,ll,wwd,wwt,wwl,wld,wlt,wll,l
  winWin:{day:wwd,time:wwt,label:wwl},winLoss:{day:wld,time:wlt,label:wll},lossWin:{day:lwd,time:lwt,label:lwl},lossLoss:{day:lld,time:llt,label:lll}}
 }
 
+const SUPABASE_URL="https://jjqtyytnegfqqdnrunir.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_MbuwtamlmFg5iVqKsPDSHw_dTDeDmT5";
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+
 let view=localStorage.getItem("mc_view")||"A";
-let scores=JSON.parse(localStorage.getItem("mc_scores")||"{}");
+let scores=JSON.parse(localStorage.getItem("mc_scores_cache")||"{}");
 let ko=JSON.parse(localStorage.getItem("mc_ko")||'{"A":{},"B":{}}');
+let currentUser=null;
+let lastSync=null;
 ko.A=ko.A||{};ko.B=ko.B||{};
-function save(){localStorage.setItem("mc_scores",JSON.stringify(scores));localStorage.setItem("mc_ko",JSON.stringify(ko));localStorage.setItem("mc_view",view)}
+
+function saveLocal(){
+ localStorage.setItem("mc_scores_cache",JSON.stringify(scores));
+ localStorage.setItem("mc_ko",JSON.stringify(ko));
+ localStorage.setItem("mc_view",view);
+}
+function save(){saveLocal()}
 function arrival(t){let[h,m]=t.split(":").map(Number),x=h*60+m-30;return String(Math.floor(x/60)).padStart(2,"0")+":"+String(x%60).padStart(2,"0")}
 function getScore(id,side){return scores[id]?.[side] ?? ""}
-function setScore(id,side,v){scores[id]=scores[id]||{};scores[id][side]=v===""?"":Math.max(0,parseInt(v||0));save();render()}
+async function setScore(id,side,v){
+ if(!currentUser){
+  alert("Sign in as an editor to change scores.");
+  return;
+ }
+ scores[id]=scores[id]||{};
+ scores[id][side]=v===""?"":Math.max(0,parseInt(v||0));
+ saveLocal();
+ render();
+
+ const row={
+   fixture_id:id,
+   score_a:scores[id].a===""||scores[id].a==null?null:Number(scores[id].a),
+   score_b:scores[id].b===""||scores[id].b==null?null:Number(scores[id].b),
+   updated_at:new Date().toISOString()
+ };
+ const {error}=await sb.from("match_results").upsert(row,{onConflict:"fixture_id"});
+ if(error){
+   setSyncStatus("Save failed: "+error.message,true);
+ }else{
+   lastSync=new Date();
+   setSyncStatus("Saved to shared results");
+   await loadSharedScores(false);
+ }
+}
 function played(fx){return getScore(fx.id,"a")!==""&&getScore(fx.id,"b")!==""}
 function resultText(fx){
  if(!played(fx))return'<span class="resultTag upcomingTag">Upcoming</span>';
@@ -320,9 +382,9 @@ function teamPoolHTML(k){
   <div><strong>vs ${x.a===team?x.b:x.a}</strong><div class="meta">arrive by ${arrival(x.time)}</div>${resultText(x)}
    <div class="scoreRow noPrint">
     <div class="teamLeft">${x.a}</div>
-    <input inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${getScore(x.id,"a")}" onchange="setScore('${x.id}','a',this.value)">
+    <input inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${getScore(x.id,"a")}" ${currentUser?"":'disabled class="readonly"'} onchange="setScore('${x.id}','a',this.value)">
     <div>–</div>
-    <input inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${getScore(x.id,"b")}" onchange="setScore('${x.id}','b',this.value)">
+    <input inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${getScore(x.id,"b")}" ${currentUser?"":'disabled class="readonly"'} onchange="setScore('${x.id}','b',this.value)">
     <div class="teamRight">${x.b}</div>
    </div>
   </div>
@@ -376,9 +438,9 @@ function resultEntry(fx){
  <div class="fixtureTop"><div class="day">${fx.day}</div><div class="time">${fx.time}</div><div><div class="fixtureTeams">${fx.a} vs ${fx.b}</div><div class="meta">Group ${fx.group}</div></div></div>
  <div class="scoreRow">
   <div class="teamLeft">${fx.a}</div>
-  <input inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${getScore(fx.id,"a")}" onchange="setScore('${fx.id}','a',this.value)">
+  <input inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${getScore(fx.id,"a")}" ${currentUser?"":'disabled class="readonly"'} onchange="setScore('${fx.id}','a',this.value)">
   <div>–</div>
-  <input inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${getScore(fx.id,"b")}" onchange="setScore('${fx.id}','b',this.value)">
+  <input inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${getScore(fx.id,"b")}" ${currentUser?"":'disabled class="readonly"'} onchange="setScore('${fx.id}','b',this.value)">
   <div class="teamRight">${fx.b}</div>
  </div>
  <div class="statusText">${resultText(fx)}</div>
@@ -456,10 +518,78 @@ function render(){
  if(s.qfResult)document.getElementById("sfLabel").textContent=(s.qfResult==="win"?route.qfWin.label:route.qfLoss.label)+" result";
  document.getElementById("knockoutOutput").innerHTML=knockoutHTML(k);
 }
+function setSyncStatus(msg,isError=false){
+ const el=document.getElementById("syncStatus");
+ if(el){
+   el.textContent=msg+(lastSync&&!isError?" • "+lastSync.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}):"");
+   el.style.color=isError?"var(--red)":"var(--muted)";
+ }
+}
+async function loadSharedScores(showStatus=true){
+ if(showStatus)setSyncStatus("Loading shared results…");
+ const {data,error}=await sb.from("match_results").select("fixture_id,score_a,score_b,updated_at");
+ if(error){
+   setSyncStatus("Could not load shared results; showing cached data. "+error.message,true);
+   return;
+ }
+ const fresh={};
+ (data||[]).forEach(row=>{
+   fresh[row.fixture_id]={a:row.score_a==null?"":row.score_a,b:row.score_b==null?"":row.score_b};
+ });
+ scores=fresh;
+ saveLocal();
+ lastSync=new Date();
+ setSyncStatus("Shared results up to date");
+ render();
+}
+function updateAuthUI(){
+ const state=document.getElementById("authState");
+ const btn=document.getElementById("authButton");
+ const out=document.getElementById("signOutButton");
+ if(currentUser){
+   state.textContent="Editor mode";
+   btn.classList.add("hidden");
+   out.classList.remove("hidden");
+ }else{
+   state.textContent="Public read-only";
+   btn.classList.remove("hidden");
+   out.classList.add("hidden");
+ }
+ render();
+}
+async function doLogin(){
+ const email=document.getElementById("authEmail").value.trim();
+ const password=document.getElementById("authPassword").value;
+ const msg=document.getElementById("authMessage");
+ msg.textContent="Signing in…";
+ const {data,error}=await sb.auth.signInWithPassword({email,password});
+ if(error){msg.textContent=error.message;return}
+ currentUser=data.user;
+ document.getElementById("authPanel").classList.add("hidden");
+ msg.textContent="";
+ updateAuthUI();
+}
+async function doSignOut(){
+ await sb.auth.signOut();
+ currentUser=null;
+ updateAuthUI();
+}
 document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>setView(b.dataset.view)));
 document.getElementById("qfResult").addEventListener("change",e=>{ko[view].qfResult=e.target.value;ko[view].sfResult="";save();render()});
 document.getElementById("sfResult").addEventListener("change",e=>{ko[view].sfResult=e.target.value;save();render()});
-render();
+
+document.getElementById("authButton").addEventListener("click",()=>document.getElementById("authPanel").classList.remove("hidden"));
+document.getElementById("cancelLoginButton").addEventListener("click",()=>document.getElementById("authPanel").classList.add("hidden"));
+document.getElementById("loginButton").addEventListener("click",doLogin);
+document.getElementById("signOutButton").addEventListener("click",doSignOut);
+
+(async()=>{
+ const {data}=await sb.auth.getSession();
+ currentUser=data.session?.user||null;
+ updateAuthUI();
+ await loadSharedScores();
+ setInterval(()=>loadSharedScores(false),20000);
+})();
 </script>
 </body>
 </html>
