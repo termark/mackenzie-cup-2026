@@ -172,7 +172,14 @@ Tournament structure, fixture times, groups, scoring rules and knockout brackets
 
 ## Current version
 
-**Page version: 0.8.1**
+**Page version: 0.8.3**
+
+## Prize giving
+
+- **Sunday 13 September 2026**
+- **15:20 – Prize Giving**
+- **15:30 – Tournament ends**
+- Prize-giving dress code: **Summer uniform and blazers** (from school email)
 
 ## Notes
 
