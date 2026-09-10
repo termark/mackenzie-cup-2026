@@ -135,7 +135,7 @@ button.action,a.action{border:0;border-radius:11px;padding:11px 14px;font-weight
     <p>Reddam House Constantia • 11–13 September 2026</p>
     <div class="heroMeta">
       <span class="metaPill">Repo: termark/mackenzie-cup-2026</span>
-      <span class="metaPill">Page version: 0.8.3</span>
+      <span class="metaPill">Page version: 0.8.4</span>
     </div>
     <div class="authbar noPrint">
       <span id="authState" class="authstate">Connecting…</span>
@@ -282,6 +282,11 @@ WGJS 6-6 Sun Valley Primary"></textarea>
         </div>
       </div>
 
+      <div class="row">
+        <h3 style="margin-bottom:8px">Group matches</h3>
+        <div id="simplePoolSchedule"></div>
+      </div>
+
       <div id="simpleQfWrap" class="row hidden">
         <label id="simpleQfLabel" for="simpleQf">Quarter-final result</label>
         <select id="simpleQf">
@@ -344,7 +349,7 @@ WGJS 6-6 Sun Valley Primary"></textarea>
   </section>
 
   <div class="footer">
-    termark/mackenzie-cup-2026 • page v0.8.3<br>
+    termark/mackenzie-cup-2026 • page v0.8.4<br>
     Static GitHub Pages app • results are stored locally in this browser
   </div>
 </div>
@@ -803,6 +808,22 @@ function dateForDay(day){return day.startsWith("Fri")?"2026-09-11":day.startsWit
 function ordinal(n){return({1:"1st",2:"2nd",3:"3rd",4:"4th"})[n]}
 
 
+
+function simplePoolHTML(){
+  const team=herschelTeam(simple.team||"A");
+  return teamFixtures(simple.team||"A").map(x=>{
+    const opp=x.a===team?x.b:x.a;
+    return `<div class="match">
+      <div class="day">${x.day}</div>
+      <div class="time">${x.time}</div>
+      <div>
+        <strong>${team} vs ${opp}</strong>
+        <div class="meta">arrive by ${arrival(x.time)}</div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
 function simpleRoute(){
   const team=simple.team||"A";
   const group=herschelGroup(team);
@@ -848,6 +869,7 @@ function renderSimple(){
   document.getElementById("simplePos").value=simple.pos||"";
   document.getElementById("simpleQf").value=simple.qf||"";
   document.getElementById("simpleSf").value=simple.sf||"";
+  document.getElementById("simplePoolSchedule").innerHTML=simplePoolHTML();
 
   const route=simpleRoute();
   document.getElementById("simpleQfWrap").classList.toggle("hidden",!route);
