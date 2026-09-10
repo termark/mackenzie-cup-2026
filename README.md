@@ -1,0 +1,145 @@
+# Mackenzie Cup 2026 – Herschel U13 Companion
+
+A lightweight mobile-friendly tournament companion for the **2026 Mackenzie Cup U13 Girls Water Polo tournament** at Reddam House Constantia.
+
+The app is focused on **Herschel U13A and U13B**, but also tracks all U13 pool results so it can calculate live group standings and project Herschel's likely knockout opponents.
+
+## Live site
+
+GitHub Pages:
+
+https://termark.github.io/mackenzie-cup-2026/
+
+GitHub repository:
+
+https://github.com/termark/mackenzie-cup-2026
+
+Official tournament PDF:
+
+https://termark.github.io/mackenzie-cup-2026/Mackenzie-Cup-2026.pdf
+
+## How to use
+
+Open the live site on any phone or computer.
+
+Use the tabs at the top:
+
+- **Herschel A** – U13A fixtures, standings and projected knockout path
+- **Herschel B** – U13B fixtures, standings and projected knockout path
+- **All Herschel** – combined Herschel A/B schedule
+- **Results** – enter or view all U13 pool results across Groups A–D
+
+Public visitors are **read-only**.
+
+To update scores:
+
+1. Tap **Editor sign in**
+2. Sign in with an authorised Supabase user
+3. Open **Results**
+4. Enter any score you know
+5. The shared standings and projections update automatically
+
+Results are stored centrally in Supabase, so updates entered on one device are visible to everyone else using the site.
+
+## What the app calculates
+
+The page tracks all U13 pool fixtures across Groups A–D and calculates:
+
+- Played
+- Won
+- Drawn
+- Lost
+- Goals For
+- Goals Against
+- Goal Difference
+- Points
+- Current group position
+- Herschel's projected quarter-final
+- Current likely opponent
+- Knockout route after Win / Loss results
+
+U13 scoring follows the tournament rules:
+
+- Win = 3 points
+- Draw = 1 point
+- Loss = 0 points
+
+The official tie-break order is:
+
+1. Head-to-head
+2. Winner against the top team
+3. Goal difference
+
+Where a tie cannot be resolved safely from the entered data, the page marks the standings as provisional rather than inventing an order.
+
+## Architecture
+
+This is intentionally a very small stack:
+
+```text
+GitHub Pages
+    ↓
+index.html
+HTML + CSS + vanilla JavaScript
+    ↓
+Supabase
+Postgres + Auth + Row Level Security
+```
+
+There is no build system, package manager, framework or server-side application.
+
+### Frontend
+
+The site is a single static `index.html` file containing:
+
+- HTML layout
+- CSS
+- tournament fixture data
+- standings logic
+- knockout mapping
+- Supabase client integration
+- local browser cache
+
+It is hosted directly by **GitHub Pages**.
+
+### Backend
+
+**Supabase Free** provides:
+
+- shared `match_results` table
+- authentication for editors
+- Row Level Security
+- public read access
+- authenticated write access
+
+The browser uses a Supabase **publishable key** only. No database password or service-role key is embedded in the page.
+
+### Sync model
+
+- Public users read shared scores from Supabase
+- Signed-in editors can insert/update results
+- The page refreshes shared results periodically
+- A local cache is kept in the browser for resilience
+
+## Repository layout
+
+```text
+mackenzie-cup-2026/
+├── index.html
+├── Mackenzie-Cup-2026.pdf
+└── README.md
+```
+
+## Source data
+
+Tournament structure, fixture times, groups, scoring rules and knockout brackets were transcribed from the official **Mackenzie Cup Correspondence 2026** PDF supplied by the tournament organisers.
+
+## Current version
+
+**Page version: 0.5.0**
+
+## Notes
+
+This is an unofficial parent-built companion page.
+
+Always treat the official tournament communication as the authoritative source if there is any discrepancy.

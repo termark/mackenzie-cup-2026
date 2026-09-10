@@ -69,6 +69,17 @@ label{display:block;font-weight:750;margin-bottom:6px}
 .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
 button.action,a.action{border:0;border-radius:11px;padding:11px 14px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-block}
 .primary{background:var(--blue);color:white}.secondary{background:#e8edf5;color:#2f3b52}
+
+.teamBadge{display:inline-flex;align-items:center;justify-content:center;min-width:54px;padding:5px 9px;border-radius:999px;font-size:.78rem;font-weight:900;letter-spacing:.02em}
+.teamBadgeA{background:var(--blue);color:#fff}
+.teamBadgeB{background:#fff;color:var(--blue2);border:2px solid var(--blue2)}
+.allMatch{position:relative;padding-left:12px}
+.allMatchA{border-left:5px solid var(--blue)}
+.allMatchB{border-left:5px solid #6b7280}
+.allPrimary{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.allPrimary strong{font-size:1rem}
+.nextTeamBadge{margin-bottom:8px}
+
 .footer{margin-top:16px;text-align:center;color:var(--muted);font-size:.82rem;line-height:1.5}
 .projection{font-size:1rem;line-height:1.45}
 .projection strong{color:var(--blue)}
@@ -98,7 +109,7 @@ button.action,a.action{border:0;border-radius:11px;padding:11px 14px;font-weight
     <p>Reddam House Constantia • 11–13 September 2026</p>
     <div class="heroMeta">
       <span class="metaPill">Repo: termark/mackenzie-cup-2026</span>
-      <span class="metaPill">Page version: 0.5.0</span>
+      <span class="metaPill">Page version: 0.5.1</span>
     </div>
     <div class="authbar noPrint">
       <span id="authState" class="authstate">Connecting…</span>
@@ -213,7 +224,7 @@ button.action,a.action{border:0;border-radius:11px;padding:11px 14px;font-weight
   </section>
 
   <div class="footer">
-    termark/mackenzie-cup-2026 • page v0.5.0<br>
+    termark/mackenzie-cup-2026 • page v0.5.1<br>
     Static GitHub Pages app • results are stored locally in this browser
   </div>
 </div>
@@ -458,7 +469,20 @@ function allTablesHTML(){
 function allHerschelHTML(){
  const xs=[...teamFixtures("A").map(x=>({...x,k:"A"})),...teamFixtures("B").map(x=>({...x,k:"B"}))];
  xs.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
- return xs.map(x=>`<div class="match"><div class="day">${x.day}</div><div class="time">${x.time}</div><div><strong>${x.a} vs ${x.b}</strong><span class="badge">${x.k}</span><div class="meta">arrive by ${arrival(x.time)}</div>${resultText(x)}</div></div>`).join("");
+ return xs.map(x=>{
+   const team=herschelTeam(x.k);
+   const opp=x.a===team?x.b:x.a;
+   const badge=`<span class="teamBadge ${x.k==="A"?"teamBadgeA":"teamBadgeB"}">U13${x.k}</span>`;
+   return `<div class="match allMatch ${x.k==="A"?"allMatchA":"allMatchB"}">
+     <div class="day">${x.day}</div>
+     <div class="time">${x.time}</div>
+     <div>
+       <div class="allPrimary">${badge}<strong>${team} vs ${opp}</strong></div>
+       <div class="meta">arrive by ${arrival(x.time)}</div>
+       ${resultText(x)}
+     </div>
+   </div>`;
+ }).join("");
 }
 function nextGameHTML(){
  const ks=view==="ALL"?["A","B"]:[view==="A"||view==="B"?view:"A"];
@@ -475,7 +499,9 @@ function nextGameHTML(){
  candidates.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
  const x=candidates[0];
  if(!x)return`<div class="nextOpponent">No next match available</div>`;
- return `<div class="nextTime">${x.time}</div><div class="nextOpponent">${view==="ALL"?herschelTeam(x.k)+" • ":""}${x.label}</div><div class="sub">${x.day}${x.opponent?" • vs "+x.opponent:""} • arrive by ${arrival(x.time)}</div>`;
+ const badge=view==="ALL"?`<div class="nextTeamBadge"><span class="teamBadge ${x.k==="A"?"teamBadgeA":"teamBadgeB"}">U13${x.k}</span></div>`:"";
+ const teamPrefix=view==="ALL"?herschelTeam(x.k)+" • ":"";
+ return `${badge}<div class="nextTime">${x.time}</div><div class="nextOpponent">${teamPrefix}${x.label}</div><div class="sub">${x.day}${x.opponent?" • vs "+x.opponent:""} • arrive by ${arrival(x.time)}</div>`;
 }
 function dateForDay(day){return day.startsWith("Fri")?"2026-09-11":day.startsWith("Sat")?"2026-09-12":"2026-09-13"}
 function ordinal(n){return({1:"1st",2:"2nd",3:"3rd",4:"4th"})[n]}
