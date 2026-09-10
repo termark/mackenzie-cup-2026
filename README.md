@@ -28,7 +28,7 @@ Use the tabs at the top:
 - **Herschel B** – U13B fixtures, standings and projected knockout path
 - **All Herschel** – combined Herschel A/B schedule
 - **Results** – enter or view all U13 pool results across Groups A–D
-- **Simple** – fallback schedule planner that works without complete tournament results or editor access
+- **Simple** – fallback schedule planner that works without complete tournament results or editor access (this is now the default landing view)
 
 Public visitors are **read-only** for the shared Results database, but anyone can use the **Simple** planner.
 
@@ -49,6 +49,33 @@ If nobody is able to capture all the other U13 results, the app is still useful.
 Open **Simple**, choose **Herschel U13A or U13B**, then select the team's final group position. The app shows the corresponding published knockout route. As Herschel plays each knockout game, select **Win** or **Loss** to reveal the next scheduled match.
 
 This mode is stored locally in the browser and does **not** require Supabase authentication, shared results, or knowledge of every other pool score.
+
+
+### Quick result import
+
+The **Results** tab includes a bulk importer for fast score capture.
+
+You can paste one result per line, for example:
+
+```text
+Oakhill Prep 3-5 Springfield
+St Cyprians B 4-7 Herschel A
+WGJS 6-6 Sun Valley Primary
+```
+
+This is useful when results arrive as a screenshot, WhatsApp message, or photo of a handwritten results sheet. A practical workflow is to transcribe/extract the visible scores into this simple text format and then use **Preview / edit**.
+
+The preview is editable before submission:
+
+- correct either score directly
+- untick any match you do not want to submit
+- see existing stored scores
+- see when a proposed import would overwrite an existing result
+- review any lines the parser could not recognise
+
+After checking the preview, an editor uses **Approve & submit** to write the selected results to Supabase.
+
+Only signed-in editors can submit imported results to Supabase.
 
 ## What the app calculates
 
@@ -145,7 +172,7 @@ Tournament structure, fixture times, groups, scoring rules and knockout brackets
 
 ## Current version
 
-**Page version: 0.6.0**
+**Page version: 0.8.0**
 
 ## Notes
 

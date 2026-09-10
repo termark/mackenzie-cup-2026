@@ -89,6 +89,23 @@ button.action,a.action{border:0;border-radius:11px;padding:11px 14px;font-weight
   .simpleGrid{grid-template-columns:1fr}
 }
 
+
+.bulkBox{margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:13px;background:#fafcff}
+.bulkBox textarea{width:100%;min-height:150px;padding:12px;border:1px solid #cfd6e2;border-radius:10px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9rem;resize:vertical}
+.importHelp{font-size:.84rem;color:var(--muted);line-height:1.45;margin-top:8px}
+.importPreview{margin-top:10px;padding:10px;border-radius:10px;background:#fff;border:1px solid var(--line);font-size:.88rem}
+
+
+.previewTable{width:100%;border-collapse:collapse;margin-top:10px;font-size:.9rem}
+.previewTable th,.previewTable td{padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+.previewTable th{text-align:left;color:var(--muted);font-size:.8rem}
+.previewTable input[type="number"]{width:58px;padding:8px;border:1px solid #cfd6e2;border-radius:8px;text-align:center;font-size:1rem}
+.previewTable input[type="checkbox"]{transform:scale(1.15)}
+.previewConflict{background:#fff8db}
+.previewExisting{font-size:.78rem;color:var(--muted);margin-top:3px}
+.previewError{margin-top:8px;color:var(--red);font-size:.86rem;line-height:1.4}
+.previewOk{color:var(--green);font-weight:800}
+
 .footer{margin-top:16px;text-align:center;color:var(--muted);font-size:.82rem;line-height:1.5}
 .projection{font-size:1rem;line-height:1.45}
 .projection strong{color:var(--blue)}
@@ -118,7 +135,7 @@ button.action,a.action{border:0;border-radius:11px;padding:11px 14px;font-weight
     <p>Reddam House Constantia • 11–13 September 2026</p>
     <div class="heroMeta">
       <span class="metaPill">Repo: termark/mackenzie-cup-2026</span>
-      <span class="metaPill">Page version: 0.6.0</span>
+      <span class="metaPill">Page version: 0.8.0</span>
     </div>
     <div class="authbar noPrint">
       <span id="authState" class="authstate">Connecting…</span>
@@ -210,6 +227,25 @@ button.action,a.action{border:0;border-radius:11px;padding:11px 14px;font-weight
       <h2>All U13 pool results</h2>
       <div class="sub">Shared results are loaded from Supabase. Only a signed-in editor can enter or change scores.</div>
       <div id="syncStatus" class="syncLine">Connecting to shared results…</div>
+
+      <div class="bulkBox noPrint">
+        <strong>Quick import</strong>
+        <div class="sub">Paste results from a screenshot/photo transcription or any text source.</div>
+        <textarea id="bulkInput" placeholder="Examples:
+Oakhill Prep 3-5 Springfield
+St Cyprians B 4-7 Herschel A
+WGJS 6-6 Sun Valley Primary"></textarea>
+        <div class="btns">
+          <button id="previewImport" class="action secondary" type="button">Preview / edit</button>
+          <button id="applyImport" class="action primary" type="button">Approve & submit</button>
+        </div>
+        <div class="importHelp">
+          Accepted examples include <code>Team A 3-5 Team B</code>, <code>Team A 3 5 Team B</code>, or one result per line.
+          The importer only matches teams and fixtures already in this tournament.
+        </div>
+        <div id="importPreview" class="importPreview hidden"></div>
+      </div>
+
       <div id="allResults"></div>
     </section>
     <section class="card">
@@ -292,7 +328,7 @@ button.action,a.action{border:0;border-radius:11px;padding:11px 14px;font-weight
   </section>
 
   <div class="footer">
-    termark/mackenzie-cup-2026 • page v0.6.0<br>
+    termark/mackenzie-cup-2026 • page v0.8.0<br>
     Static GitHub Pages app • results are stored locally in this browser
   </div>
 </div>
@@ -357,7 +393,7 @@ const SUPABASE_URL="https://jjqtyytnegfqqdnrunir.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_MbuwtamlmFg5iVqKsPDSHw_dTDeDmT5";
 const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 
-let view=localStorage.getItem("mc_view")||"A";
+let view=localStorage.getItem("mc_view")||"SIMPLE";
 let scores=JSON.parse(localStorage.getItem("mc_scores_cache")||"{}");
 let ko=JSON.parse(localStorage.getItem("mc_ko")||'{"A":{},"B":{}}');
 let simple=JSON.parse(localStorage.getItem("mc_simple")||'{"team":"A","pos":"","qf":"","sf":""}');
@@ -527,6 +563,176 @@ function resultEntry(fx){
  <div class="statusText">${resultText(fx)}</div>
  </div>`;
 }
+
+function normaliseTeamName(s){
+  return s.toLowerCase().replace(/[^a-z0-9]+/g," ").replace(/\s+/g," ").trim();
+}
+function knownTeamAliases(){
+  const m={};
+  Object.values(groups).flat().forEach(team=>{
+    m[normaliseTeamName(team)]=team;
+  });
+  m["herschel u13a"]="Herschel A";
+  m["herschel a"]="Herschel A";
+  m["herschel u13b"]="Herschel B";
+  m["herschel b"]="Herschel B";
+  m["reddam a"]="Reddam Constantia A";
+  m["reddam b"]="Reddam Constantia B";
+  m["rustenburg"]="Rustenburg Girls Junior";
+  m["bridge house"]="Bridge House Prep";
+  return m;
+}
+function parseBulkResults(text){
+  const aliases=knownTeamAliases();
+  const allTeams=Object.keys(aliases).sort((a,b)=>b.length-a.length);
+  const out=[],errors=[];
+  text.split(/\n+/).map(x=>x.trim()).filter(Boolean).forEach((line,idx)=>{
+    const norm=normaliseTeamName(line);
+    let leftAlias=null,rightAlias=null,leftTeam=null,rightTeam=null;
+    for(const a of allTeams){
+      if(norm.startsWith(a+" ")||norm===a){leftAlias=a;leftTeam=aliases[a];break;}
+    }
+    for(const a of allTeams){
+      if(norm.endsWith(" "+a)||norm===a){rightAlias=a;rightTeam=aliases[a];break;}
+    }
+    if(!leftTeam||!rightTeam||leftTeam===rightTeam){
+      errors.push(`Line ${idx+1}: couldn't identify both teams — ${line}`);
+      return;
+    }
+    let middle=norm.slice(leftAlias.length, norm.length-rightAlias.length).trim();
+    const nums=middle.match(/\d+/g);
+    if(!nums||nums.length<2){
+      errors.push(`Line ${idx+1}: couldn't find two scores — ${line}`);
+      return;
+    }
+    const sa=Number(nums[0]), sb=Number(nums[1]);
+    const fx=fixtures.find(f=> (f.a===leftTeam&&f.b===rightTeam)||(f.a===rightTeam&&f.b===leftTeam));
+    if(!fx){
+      errors.push(`Line ${idx+1}: no matching fixture — ${leftTeam} vs ${rightTeam}`);
+      return;
+    }
+    const scoreA = fx.a===leftTeam ? sa : sb;
+    const scoreB = fx.a===leftTeam ? sb : sa;
+    out.push({fixture:fx,scoreA,scoreB,source:line});
+  });
+  return{out,errors};
+}
+
+let importDraft=[];
+
+function buildImportDraft(){
+  const text=document.getElementById("bulkInput").value;
+  const p=parseBulkResults(text);
+  importDraft=p.out.map((x,i)=>{
+    const existing=scores[x.fixture.id]||{};
+    return{
+      id:i,
+      fixture:x.fixture,
+      scoreA:x.scoreA,
+      scoreB:x.scoreB,
+      include:true,
+      existingA:existing.a===""||existing.a==null?null:Number(existing.a),
+      existingB:existing.b===""||existing.b==null?null:Number(existing.b)
+    };
+  });
+  return p;
+}
+function draftHasConflict(d){
+  if(d.existingA==null&&d.existingB==null)return false;
+  return d.existingA!==d.scoreA||d.existingB!==d.scoreB;
+}
+function renderImportPreview(errors=[]){
+  const box=document.getElementById("importPreview");
+  box.classList.remove("hidden");
+
+  if(!importDraft.length){
+    box.innerHTML="<strong>No recognised results yet.</strong>"+(errors.length?`<div class="previewError">${errors.join("<br>")}</div>`:"");
+    return;
+  }
+
+  let rows=importDraft.map(d=>{
+    const conflict=draftHasConflict(d);
+    const existing=(d.existingA!=null||d.existingB!=null)
+      ? `<div class="previewExisting">Existing: ${d.existingA??"–"}–${d.existingB??"–"}${conflict?" • will overwrite":""}</div>`
+      : `<div class="previewExisting">No existing score</div>`;
+    return `<tr class="${conflict?"previewConflict":""}">
+      <td><input type="checkbox" ${d.include?"checked":""} onchange="toggleDraft(${d.id},this.checked)"></td>
+      <td><strong>${d.fixture.a}</strong>${existing}</td>
+      <td><input type="number" min="0" inputmode="numeric" value="${d.scoreA}" onchange="editDraftScore(${d.id},'A',this.value)"></td>
+      <td>–</td>
+      <td><input type="number" min="0" inputmode="numeric" value="${d.scoreB}" onchange="editDraftScore(${d.id},'B',this.value)"></td>
+      <td><strong>${d.fixture.b}</strong></td>
+    </tr>`;
+  }).join("");
+
+  let h=`<div class="previewOk">${importDraft.length} recognised result${importDraft.length===1?"":"s"}</div>
+  <div class="tableWrap"><table class="previewTable">
+    <thead><tr><th>Use</th><th>Team</th><th>Score</th><th></th><th>Score</th><th>Team</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div>`;
+  if(errors.length)h+=`<div class="previewError"><strong>Unrecognised / needs attention:</strong><br>${errors.join("<br>")}</div>`;
+  box.innerHTML=h;
+}
+function previewBulk(){
+  const p=buildImportDraft();
+  renderImportPreview(p.errors);
+}
+function toggleDraft(id,checked){
+  const d=importDraft.find(x=>x.id===id);
+  if(d)d.include=checked;
+}
+function editDraftScore(id,side,v){
+  const d=importDraft.find(x=>x.id===id);
+  if(!d)return;
+  const n=Math.max(0,parseInt(v||0));
+  if(side==="A")d.scoreA=n; else d.scoreB=n;
+}
+async function applyBulk(){
+  if(!currentUser){
+    alert("Sign in as an editor to apply shared results.");
+    return;
+  }
+  if(!importDraft.length){
+    const p=buildImportDraft();
+    renderImportPreview(p.errors);
+    if(!importDraft.length)return;
+  }
+
+  const selected=importDraft.filter(x=>x.include);
+  if(!selected.length){
+    alert("No results selected.");
+    return;
+  }
+
+  const rows=selected.map(x=>({
+    fixture_id:x.fixture.id,
+    score_a:Number(x.scoreA),
+    score_b:Number(x.scoreB),
+    updated_at:new Date().toISOString()
+  }));
+
+  const conflicts=selected.filter(d=>draftHasConflict(d));
+  if(conflicts.length){
+    const ok=confirm(`${conflicts.length} selected result${conflicts.length===1?"":"s"} will overwrite existing score${conflicts.length===1?"":"s"}. Continue?`);
+    if(!ok)return;
+  }
+
+  const {error}=await sb.from("match_results").upsert(rows,{onConflict:"fixture_id"});
+  if(error){
+    setSyncStatus("Bulk import failed: "+error.message,true);
+    return;
+  }
+
+  rows.forEach(r=>scores[r.fixture_id]={a:r.score_a,b:r.score_b});
+  saveLocal();
+  lastSync=new Date();
+  setSyncStatus(`Imported ${rows.length} shared result${rows.length===1?"":"s"}`);
+  document.getElementById("bulkInput").value="";
+  importDraft=[];
+  document.getElementById("importPreview").classList.add("hidden");
+  render();
+}
+
 function resultsHTML(){
  return ["A","B","C","D"].map(g=>`<div class="resultGroup"><h3>Group ${g}</h3>${fixtures.filter(x=>x.group===g).map(resultEntry).join("")}</div>`).join("");
 }
@@ -749,6 +955,10 @@ document.getElementById("simpleTeam").addEventListener("change",e=>{simple.team=
 document.getElementById("simplePos").addEventListener("change",e=>{simple.pos=e.target.value;simple.qf="";simple.sf="";saveLocal();renderSimple()});
 document.getElementById("simpleQf").addEventListener("change",e=>{simple.qf=e.target.value;simple.sf="";saveLocal();renderSimple()});
 document.getElementById("simpleSf").addEventListener("change",e=>{simple.sf=e.target.value;saveLocal();renderSimple()});
+
+
+document.getElementById("previewImport").addEventListener("click",previewBulk);
+document.getElementById("applyImport").addEventListener("click",applyBulk);
 
 document.getElementById("authButton").addEventListener("click",()=>document.getElementById("authPanel").classList.remove("hidden"));
 document.getElementById("cancelLoginButton").addEventListener("click",()=>document.getElementById("authPanel").classList.add("hidden"));
