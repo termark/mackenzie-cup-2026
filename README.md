@@ -172,7 +172,7 @@ Tournament structure, fixture times, groups, scoring rules and knockout brackets
 
 ## Current version
 
-**Page version: 0.8.0**
+**Page version: 0.8.1**
 
 ## Notes
 
