@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#183784">
+<title>Herschel U13 – Mackenzie Cup 2026</title>
+<style>
+:root{
+  --bg:#f4f6fa; --card:#fff; --ink:#182033; --muted:#6b7280; --line:#dde3ec;
+  --blue:#1f3f91; --blue2:#17316f; --soft:#eef3ff; --green:#087a62; --greenSoft:#ecfdf5;
+  --orange:#9a4d0b; --orangeSoft:#fff7ed; --shadow:0 7px 24px rgba(22,34,66,.08);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.wrap{max-width:720px;margin:auto;padding:16px 14px 48px}
+.hero{background:linear-gradient(135deg,var(--blue2),var(--blue));color:#fff;border-radius:20px;padding:22px 20px;box-shadow:var(--shadow)}
+.hero h1{margin:0 0 6px;font-size:clamp(1.65rem,7vw,2.25rem);line-height:1.08}
+.hero p{margin:0;color:#dbe7ff;font-size:.96rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:16px;box-shadow:var(--shadow)}
+h2{font-size:1.08rem;margin:0 0 13px} h3{font-size:1rem;margin:17px 0 9px}
+label{display:block;font-weight:700;margin-bottom:7px}
+select{width:100%;padding:13px 14px;border:1px solid #cfd6e2;border-radius:12px;background:#fff;font-size:1rem;color:var(--ink)}
+.next{background:linear-gradient(135deg,#eef3ff,#f8faff);border:1px solid #d4def7}
+.nextLabel{text-transform:uppercase;letter-spacing:.08em;font-size:.74rem;font-weight:800;color:var(--blue)}
+.nextTime{font-size:2rem;font-weight:850;color:var(--blue);margin:4px 0 2px}
+.nextOpponent{font-size:1.16rem;font-weight:800}
+.sub{color:var(--muted);font-size:.9rem;margin-top:5px}
+.match{display:grid;grid-template-columns:92px 72px 1fr;gap:9px;padding:13px 0;border-top:1px solid var(--line);align-items:start}
+.match:first-child{border-top:0;padding-top:0}
+.day{font-weight:760}.time{font-weight:850;color:var(--blue);font-variant-numeric:tabular-nums}
+.meta{color:var(--muted);font-size:.86rem;margin-top:3px}
+.badge{display:inline-block;border-radius:999px;padding:2px 7px;font-size:.75rem;font-weight:800;margin-left:5px;background:#edf1ff;color:#4438a8}
+.routeBox{margin-top:13px;padding:14px;border:1px solid #d9e2f2;border-radius:13px;background:#fafcff}
+.routeTitle{font-weight:800;margin-bottom:8px}
+.outcomes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.outcome{border-radius:12px;padding:12px}
+.win{background:var(--greenSoft);border:1px solid #bdebdc}
+.loss{background:var(--orangeSoft);border:1px solid #fed7aa}
+.outcome strong{display:block;margin-bottom:4px}
+.small{font-size:.87rem;color:var(--muted)}
+.hidden{display:none!important}
+.controls .row{margin-top:14px}
+button{border:0;border-radius:11px;padding:11px 14px;font-weight:800;font-size:.94rem;cursor:pointer}
+.primary{background:var(--blue);color:white}.secondary{background:#e9edf5;color:#2d3748}
+.btns{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+@media(max-width:470px){
+  .match{grid-template-columns:82px 62px 1fr;font-size:.94rem}
+  .outcomes{grid-template-columns:1fr}
+}
+@media print{
+  body{background:#fff}.wrap{max-width:none;padding:0}.card,.hero{box-shadow:none}.controls,.btns{display:none!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <h1>Herschel U13<br>Mackenzie Cup 2026</h1>
+    <p>Reddam House Constantia • 11–13 September 2026</p>
+  </section>
+
+  <section class="card controls">
+    <h2>Who are you following?</h2>
+    <label for="team">Herschel team</label>
+    <select id="team">
+      <option value="A">Herschel U13A</option>
+      <option value="B">Herschel U13B</option>
+    </select>
+  </section>
+
+  <section class="card next">
+    <div class="nextLabel">Next scheduled game</div>
+    <div id="nextGame"></div>
+  </section>
+
+  <section class="card">
+    <h2>Pool matches</h2>
+    <div id="poolSchedule"></div>
+    <div class="sub">Recommended arrival is 30 minutes before each match.</div>
+  </section>
+
+  <section class="card controls">
+    <h2>Knockout path</h2>
+
+    <div class="row">
+      <label for="groupPos">Final group position</label>
+      <select id="groupPos">
+        <option value="">Choose...</option>
+        <option value="1">1st in group</option>
+        <option value="2">2nd in group</option>
+        <option value="3">3rd in group</option>
+        <option value="4">4th in group</option>
+      </select>
+    </div>
+
+    <div id="qfControls" class="row hidden">
+      <label id="qfLabel" for="qfResult">Quarter-final result</label>
+      <select id="qfResult">
+        <option value="">Not played yet</option>
+        <option value="win">Win</option>
+        <option value="loss">Loss</option>
+      </select>
+    </div>
+
+    <div id="sfControls" class="row hidden">
+      <label id="sfLabel" for="sfResult">Semi-final result</label>
+      <select id="sfResult">
+        <option value="">Not played yet</option>
+        <option value="win">Win</option>
+        <option value="loss">Loss</option>
+      </select>
+    </div>
+
+    <div class="btns">
+      <button class="primary" onclick="window.print()">Print / Save PDF</button>
+      <button class="secondary" onclick="resetKnockout()">Reset results</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Projected knockout schedule</h2>
+    <div id="knockoutOutput" class="sub">Choose the final group position to see the route.</div>
+  </section>
+</div>
+
+<script>
+const teams = {
+  A: {
+    name:"Herschel U13A", group:"A",
+    pool:[
+      {day:"Fri 11 Sep", time:"16:00", opponent:"St Cyprians B"},
+      {day:"Fri 11 Sep", time:"18:00", opponent:"Springfield"},
+      {day:"Sat 12 Sep", time:"12:00", opponent:"Oakhill Prep"}
+    ],
+    routes:{
+      1:{qf:m("Sat 12 Sep","16:30","Cup QF3","2nd Group C"), qfWin:m("Sun 13 Sep","08:30","Cup SF2","Winner Cup QF4"), qfLoss:m("Sun 13 Sep","09:30","Plate SF2","Loser Cup QF4"), winWin:m("Sun 13 Sep","13:20","Cup Final","Winner Cup SF1"), winLoss:m("Sun 13 Sep","10:00","Cup 3rd/4th","Loser Cup SF1"), lossWin:m("Sun 13 Sep","13:00","Plate Final","Winner Plate SF1"), lossLoss:m("Sun 13 Sep","11:30","Plate 3rd/4th","Loser Plate SF1")},
+      2:{qf:m("Sat 12 Sep","15:30","Cup QF1","1st Group C"), qfWin:m("Sun 13 Sep","08:00","Cup SF1","Winner Cup QF2"), qfLoss:m("Sun 13 Sep","09:00","Plate SF1","Loser Cup QF2"), winWin:m("Sun 13 Sep","13:20","Cup Final","Winner Cup SF2"), winLoss:m("Sun 13 Sep","10:00","Cup 3rd/4th","Loser Cup SF2"), lossWin:m("Sun 13 Sep","13:00","Plate Final","Winner Plate SF2"), lossLoss:m("Sun 13 Sep","11:30","Plate 3rd/4th","Loser Plate SF2")},
+      3:{qf:m("Sat 12 Sep","14:30","Bowl QF3","4th Group C"), qfWin:m("Sat 12 Sep","18:00","Bowl SF2","Winner Bowl QF4"), qfLoss:m("Sat 12 Sep","19:00","Shield SF2","Loser Bowl QF4"), winWin:m("Sun 13 Sep","12:30","Bowl Final","Winner Bowl SF1"), winLoss:m("Sun 13 Sep","11:00","Bowl 3rd/4th","Loser Bowl SF1"), lossWin:m("Sun 13 Sep","12:00","Shield Final","Winner Shield SF1"), lossLoss:m("Sun 13 Sep","10:30","Shield 3rd/4th","Loser Shield SF1")},
+      4:{qf:m("Sat 12 Sep","13:30","Bowl QF1","3rd Group C"), qfWin:m("Sat 12 Sep","17:30","Bowl SF1","Winner Bowl QF2"), qfLoss:m("Sat 12 Sep","18:30","Shield SF1","Loser Bowl QF2"), winWin:m("Sun 13 Sep","12:30","Bowl Final","Winner Bowl SF2"), winLoss:m("Sun 13 Sep","11:00","Bowl 3rd/4th","Loser Bowl SF2"), lossWin:m("Sun 13 Sep","12:00","Shield Final","Winner Shield SF2"), lossLoss:m("Sun 13 Sep","10:30","Shield 3rd/4th","Loser Shield SF2")}
+    }
+  },
+  B: {
+    name:"Herschel U13B", group:"D",
+    pool:[
+      {day:"Fri 11 Sep", time:"17:30", opponent:"Bridge House Prep"},
+      {day:"Sat 12 Sep", time:"08:00", opponent:"Sun Valley Primary"},
+      {day:"Sat 12 Sep", time:"09:30", opponent:"WGJS"}
+    ],
+    routes:{
+      1:{qf:m("Sat 12 Sep","16:00","Cup QF2","2nd Group B"), qfWin:m("Sun 13 Sep","08:00","Cup SF1","Winner Cup QF1"), qfLoss:m("Sun 13 Sep","09:00","Plate SF1","Loser Cup QF1"), winWin:m("Sun 13 Sep","13:20","Cup Final","Winner Cup SF2"), winLoss:m("Sun 13 Sep","10:00","Cup 3rd/4th","Loser Cup SF2"), lossWin:m("Sun 13 Sep","13:00","Plate Final","Winner Plate SF2"), lossLoss:m("Sun 13 Sep","11:30","Plate 3rd/4th","Loser Plate SF2")},
+      2:{qf:m("Sat 12 Sep","17:00","Cup QF4","1st Group B"), qfWin:m("Sun 13 Sep","08:30","Cup SF2","Winner Cup QF3"), qfLoss:m("Sun 13 Sep","09:30","Plate SF2","Loser Cup QF3"), winWin:m("Sun 13 Sep","13:20","Cup Final","Winner Cup SF1"), winLoss:m("Sun 13 Sep","10:00","Cup 3rd/4th","Loser Cup SF1"), lossWin:m("Sun 13 Sep","13:00","Plate Final","Winner Plate SF1"), lossLoss:m("Sun 13 Sep","11:30","Plate 3rd/4th","Loser Plate SF1")},
+      3:{qf:m("Sat 12 Sep","14:00","Bowl QF2","4th Group B"), qfWin:m("Sat 12 Sep","17:30","Bowl SF1","Winner Bowl QF1"), qfLoss:m("Sat 12 Sep","18:30","Shield SF1","Loser Bowl QF1"), winWin:m("Sun 13 Sep","12:30","Bowl Final","Winner Bowl SF2"), winLoss:m("Sun 13 Sep","11:00","Bowl 3rd/4th","Loser Bowl SF2"), lossWin:m("Sun 13 Sep","12:00","Shield Final","Winner Shield SF2"), lossLoss:m("Sun 13 Sep","10:30","Shield 3rd/4th","Loser Shield SF2")},
+      4:{qf:m("Sat 12 Sep","15:00","Bowl QF4","3rd Group B"), qfWin:m("Sat 12 Sep","18:00","Bowl SF2","Winner Bowl QF3"), qfLoss:m("Sat 12 Sep","19:00","Shield SF2","Loser Bowl QF3"), winWin:m("Sun 13 Sep","12:30","Bowl Final","Winner Bowl SF1"), winLoss:m("Sun 13 Sep","11:00","Bowl 3rd/4th","Loser Bowl SF1"), lossWin:m("Sun 13 Sep","12:00","Shield Final","Winner Shield SF1"), lossLoss:m("Sun 13 Sep","10:30","Shield 3rd/4th","Loser Shield SF1")}
+    }
+  }
+};
+
+function m(day,time,label,opponent){ return {day,time,label,opponent}; }
+function arrival(time){
+  let [h,min]=time.split(":").map(Number), total=h*60+min-30;
+  return String(Math.floor(total/60)).padStart(2,"0")+":"+String(total%60).padStart(2,"0");
+}
+function matchHTML(x){
+  return `<div class="match"><div class="day">${x.day}</div><div class="time">${x.time}</div><div><strong>${x.label||("vs "+x.opponent)}</strong>${x.label?`<span class="badge">${x.label}</span>`:""}<div class="meta">${x.label?"vs "+x.opponent:""}${x.label?" • ":""}arrive by ${arrival(x.time)}</div></div></div>`;
+}
+function outcomeHTML(title,win,loss){
+  return `<div class="routeBox"><div class="routeTitle">${title}</div><div class="outcomes">
+    <div class="outcome win"><strong>If WIN</strong><div>${win.day} • <b>${win.time}</b></div><div class="small">${win.label}</div></div>
+    <div class="outcome loss"><strong>If LOSS</strong><div>${loss.day} • <b>${loss.time}</b></div><div class="small">${loss.label}</div></div>
+  </div></div>`;
+}
+
+const teamSel=document.getElementById("team"), groupPos=document.getElementById("groupPos"),
+qfResult=document.getElementById("qfResult"), sfResult=document.getElementById("sfResult"),
+qfControls=document.getElementById("qfControls"), sfControls=document.getElementById("sfControls"),
+qfLabel=document.getElementById("qfLabel"), sfLabel=document.getElementById("sfLabel"),
+poolSchedule=document.getElementById("poolSchedule"), knockoutOutput=document.getElementById("knockoutOutput"),
+nextGame=document.getElementById("nextGame");
+
+function render(){
+  const t=teams[teamSel.value];
+  poolSchedule.innerHTML=t.pool.map(x=>matchHTML({...x,label:""})).join("");
+
+  // Next scheduled game defaults to first pool game. Once a knockout path is selected,
+  // it becomes the latest known upcoming knockout match.
+  let next=t.pool[0];
+
+  const pos=groupPos.value;
+  if(!pos){
+    qfControls.classList.add("hidden"); sfControls.classList.add("hidden");
+    knockoutOutput.innerHTML=`Choose ${t.name}'s final Group ${t.group} position to see the route.`;
+  } else {
+    const r=t.routes[pos];
+    next=r.qf;
+    qfControls.classList.remove("hidden");
+    qfLabel.textContent=r.qf.label+" result";
+    sfControls.classList.add("hidden");
+
+    let out=`<div><strong>${t.name}: ${ordinal(pos)} in Group ${t.group}</strong></div>`;
+    out+=matchHTML(r.qf);
+
+    if(!qfResult.value){
+      out+=outcomeHTML("Next match after "+r.qf.label,r.qfWin,r.qfLoss);
+    } else if(qfResult.value==="win"){
+      next=r.qfWin; sfControls.classList.remove("hidden"); sfLabel.textContent=r.qfWin.label+" result";
+      out+=matchHTML(r.qfWin);
+      if(!sfResult.value) out+=outcomeHTML("Next match after "+r.qfWin.label,r.winWin,r.winLoss);
+      else { next=sfResult.value==="win"?r.winWin:r.winLoss; out+=matchHTML(next); }
+    } else {
+      next=r.qfLoss; sfControls.classList.remove("hidden"); sfLabel.textContent=r.qfLoss.label+" result";
+      out+=matchHTML(r.qfLoss);
+      if(!sfResult.value) out+=outcomeHTML("Next match after "+r.qfLoss.label,r.lossWin,r.lossLoss);
+      else { next=sfResult.value==="win"?r.lossWin:r.lossLoss; out+=matchHTML(next); }
+    }
+    knockoutOutput.innerHTML=out;
+  }
+
+  nextGame.innerHTML=`<div class="nextTime">${next.time}</div>
+    <div class="nextOpponent">${next.label?next.label:"vs "+next.opponent}</div>
+    <div class="sub">${next.day}${next.label?" • vs "+next.opponent:""} • arrive by ${arrival(next.time)}</div>`;
+}
+function ordinal(n){return ({1:"1st",2:"2nd",3:"3rd",4:"4th"})[n]}
+function resetKnockout(){groupPos.value="";qfResult.value="";sfResult.value="";render()}
+teamSel.addEventListener("change",()=>{resetKnockout()});
+groupPos.addEventListener("change",()=>{qfResult.value="";sfResult.value="";render()});
+qfResult.addEventListener("change",()=>{sfResult.value="";render()});
+sfResult.addEventListener("change",render);
+render();
+</script>
+</body>
+</html>
